@@ -109,6 +109,23 @@ uninotes_erp_sahar_hammami/
 | sarah.trabelsi | Étudiant | password123 |
 | mehdi.khalil | Étudiant | password123 |
 
+## Modules du catalogue (12 modules, 60 points)
+
+| Module | Coefficient |
+|---|---|
+| Algorithmique et Problem Solving | 5 |
+| Conception orientée objet et programmation Java | 6 |
+| Data warehousing | 4 |
+| Framework Python pour le web | 6 |
+| Fundamentals on Deep Learning | 4 |
+| Génie logiciel | 6 |
+| Machine Learning basics | 5 |
+| Multimodal AI | 4 |
+| Python pour l'ingénierie des données | 5 |
+| Système de gestion de base de données | 5 |
+| Techniques d'estimation pour l'ingénieur | 5 |
+| Techniques d'optimisation | 5 |
+
 ## Gestion de l'intégrité référentielle
 
 Stratégie choisie pour la suppression d'un module du catalogue :

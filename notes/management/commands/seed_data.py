@@ -43,18 +43,20 @@ class Command(BaseCommand):
 
         self.stdout.write("  [OK] Utilisateurs crees")
 
-        # --- 10 MODULES DU CATALOGUE ---
+        # --- 12 MODULES DU CATALOGUE (total coefficients = 60) ---
         modules_data = [
-            ("Introduction à l'IA", 6, "Fondamentaux de l'intelligence artificielle"),
-            ("Django Avancé", 8, "ORM, sécurité, déploiement"),
-            ("Base de données relationnelles", 6, "SQL, modélisation, optimisation"),
-            ("Développement Frontend", 5, "HTML, CSS, JavaScript, frameworks"),
-            ("Algorithmique et structures", 7, "Algorithmes fondamentaux, complexité"),
-            ("Réseaux et sécurité", 6, "Protocoles, sécurité des applications web"),
-            ("Génie logiciel", 8, "Méthodes agiles, UML, gestion de projet"),
-            ("Statistiques et probabilités", 5, "Analyse de données, probabilités"),
-            ("Anglais technique", 4, "Communication professionnelle en anglais"),
-            ("Marketing digital", 5, "SEO, SEA, stratégies digitales"),
+            ("Algorithmique et Problem Solving", 5, ""),
+            ("Conception orientée objet et programmation Java", 6, ""),
+            ("Data warehousing", 4, ""),
+            ("Framework Python pour le web", 6, ""),
+            ("Fundamentals on Deep Learning", 4, ""),
+            ("Génie logiciel", 6, ""),
+            ("Machine Learning basics", 5, ""),
+            ("Multimodal AI", 4, ""),
+            ("Python pour l'ingénierie des données", 5, ""),
+            ("Système de gestion de base de données", 5, ""),
+            ("Techniques d'estimation pour l'ingénieur", 5, ""),
+            ("Techniques d'optimisation", 5, ""),
         ]
         modules = []
         for intitule, coeff, desc in modules_data:
@@ -63,7 +65,7 @@ class Command(BaseCommand):
             )
             modules.append(mod)
 
-        self.stdout.write("  [OK] 10 modules du catalogue crees")
+        self.stdout.write("  [OK] 12 modules du catalogue crees")
 
         # --- CATÉGORIES D'ÉVALUATION pour chaque module ---
         categories_data = [
