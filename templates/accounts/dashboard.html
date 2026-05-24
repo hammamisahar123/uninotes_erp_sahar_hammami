@@ -19,11 +19,11 @@
 
 {% if user.profile.role == 'etudiant' %}
     {% if inscription %}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
+        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20 card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-purple-200 text-sm font-medium">Moyenne générale</span>
-                <span class="material-symbols-outlined text-purple-200">star</span>
+                <span class="material-symbols-outlined text-purple-200 fill">star</span>
             </div>
             <div class="flex items-end gap-2">
                 <span class="text-4xl font-bold">
@@ -36,13 +36,13 @@
                 <span class="text-purple-200 text-sm mb-1">/20</span>
             </div>
             {% if moyenne_generale is not None %}
-            <div class="mt-3 h-1.5 bg-purple-500/50 rounded-full overflow-hidden">
-                <div class="h-full bg-white rounded-full transition-all" style="width:{% widthratio moyenne_generale 20 100 %}%"></div>
+            <div class="mt-3 h-2 bg-purple-500/40 rounded-full overflow-hidden">
+                <div class="h-full bg-white rounded-full progress-animated" style="width:{% widthratio moyenne_generale 20 100 %}%"></div>
             </div>
             {% endif %}
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-slate-500 text-sm font-medium">Crédits</span>
                 <span class="material-symbols-outlined text-purple-500">token</span>
@@ -51,10 +51,13 @@
                 <span class="text-4xl font-bold text-slate-800">{{ total_coeff }}</span>
                 <span class="text-slate-400 text-sm mb-1">/ 60 pts</span>
             </div>
+            <div class="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full rounded-full progress-animated {% if total_coeff == 60 %}bg-emerald-500{% elif total_coeff >= 50 %}bg-amber-500{% else %}bg-purple-500{% endif %}" style="width:{% widthratio total_coeff 60 100 %}%"></div>
+            </div>
             <p class="text-xs text-slate-400 mt-3">Inscription {{ inscription.annee_academique }}</p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-slate-500 text-sm font-medium">Statut</span>
                 <span class="material-symbols-outlined {% if inscription.statut == 'ouverte' %}text-amber-500{% else %}text-emerald-500{% endif %}">
@@ -63,7 +66,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                    {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700{% else %}bg-emerald-50 text-emerald-700{% endif %}">
+                    {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
                     <span class="w-2 h-2 rounded-full {% if inscription.statut == 'ouverte' %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
                     {{ inscription.get_statut_display }}
                 </span>
@@ -77,7 +80,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-8">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-8 fade-in">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 class="font-semibold text-slate-800 flex items-center gap-2">
                 <span class="material-symbols-outlined text-purple-500">menu_book</span>
@@ -91,7 +94,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="border-b border-slate-100">
+                    <tr class="border-b border-slate-100 bg-slate-50/50">
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Module</th>
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Coefficient</th>
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Moyenne</th>
@@ -105,7 +108,7 @@
                         <td class="px-6 py-4">
                             <details class="group">
                                 <summary class="cursor-pointer list-none flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
                                         <span class="material-symbols-outlined text-white text-base">menu_book</span>
                                     </div>
                                     <span class="font-medium text-slate-800">{{ mc.module_catalogue.intitule }}</span>
@@ -116,9 +119,12 @@
                                     {% for cat in mc.module_catalogue.categories_evaluation.all %}
                                     <div class="flex items-center gap-3 text-xs">
                                         <span class="text-slate-500 w-24">{{ cat.nom }}</span>
-                                        <span class="font-medium text-purple-600 w-12">{{ cat.poids }}%</span>
+                                        <div class="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-purple-400 rounded-full" style="width:{{ cat.poids }}%"></div>
+                                        </div>
+                                        <span class="font-medium text-purple-600 w-8">{{ cat.poids }}%</span>
                                         {% if nnotes and cat.id in nnotes %}
-                                        <span class="font-medium text-emerald-600">{{ nnotes|dict_key:cat.id }}</span>
+                                        <span class="font-semibold {% if nnotes|dict_key:cat.id >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ nnotes|dict_key:cat.id }}</span>
                                         <span class="text-slate-400">/ 20</span>
                                         {% else %}
                                         <span class="text-slate-300">—</span>
@@ -129,12 +135,22 @@
                             </details>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">{{ mc.module_catalogue.coefficient }} pts</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if mc.module_catalogue.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                                {% elif mc.module_catalogue.coefficient <= 8 %}bg-amber-50 text-amber-700
+                                {% else %}bg-rose-50 text-rose-700{% endif %}">
+                                {{ mc.module_catalogue.coefficient }} pts
+                            </span>
                         </td>
                         <td class="px-6 py-4">
                             {% if mc.moyenne is not None %}
-                            <span class="font-semibold text-slate-800">{{ mc.moyenne|floatformat:2 }}</span>
-                            <span class="text-slate-400">/ 20</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold {% if mc.moyenne >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ mc.moyenne|floatformat:2 }}</span>
+                                <span class="text-slate-400">/ 20</span>
+                                <span class="material-symbols-outlined text-sm {% if mc.moyenne >= 10 %}text-emerald-400{% else %}text-red-300{% endif %}">
+                                    {% if mc.moyenne >= 10 %}check_circle{% else %}error{% endif %}
+                                </span>
+                            </div>
                             {% else %}
                             <span class="text-slate-400 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-sm">hourglass_empty</span>
@@ -143,7 +159,7 @@
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{% url 'notes:saisie_notes' mc.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                            <a href="{% url 'notes:saisie_notes' mc.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 hover:shadow-sm transition-all">
                                 <span class="material-symbols-outlined text-sm">edit</span>
                                 Saisir
                             </a>
@@ -153,7 +169,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="4" class="px-6 py-10 text-center text-slate-400">
-                            <span class="material-symbols-outlined text-3xl mb-2 block">info</span>
+                            <span class="material-symbols-outlined text-4xl mb-2 block text-slate-300">info</span>
                             Aucun module choisi pour cette inscription.
                         </td>
                     </tr>
@@ -162,21 +178,27 @@
             </table>
         </div>
         {% if moyenne_generale is not None %}
-        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-between">
-            <span class="font-semibold text-slate-700">Moyenne générale</span>
-            <span class="text-2xl font-bold text-purple-600">{{ moyenne_generale|floatformat:2 }} <span class="text-sm font-normal text-slate-400">/ 20</span></span>
+        <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-between">
+            <span class="font-semibold text-slate-700 flex items-center gap-2">
+                <span class="material-symbols-outlined text-purple-500">calculate</span>
+                Moyenne générale
+            </span>
+            <span class="text-2xl font-bold {% if moyenne_generale >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">
+                {{ moyenne_generale|floatformat:2 }}
+                <span class="text-sm font-normal text-slate-400">/ 20</span>
+            </span>
         </div>
         {% endif %}
     </div>
 
     {% else %}
-    <div class="max-w-md mx-auto text-center py-16">
-        <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+    <div class="max-w-md mx-auto text-center py-16 fade-in">
+        <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/20">
             <span class="material-symbols-outlined text-4xl text-amber-600">note_add</span>
         </div>
         <h3 class="text-xl font-bold text-slate-800 mb-2">Aucune inscription</h3>
         <p class="text-slate-500 text-sm mb-6">Vous n'avez pas encore d'inscription pour cette année académique.</p>
-        <a href="{% url 'inscription:panier' %}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors">
+        <a href="{% url 'inscription:panier' %}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25">
             <span class="material-symbols-outlined text-lg">add</span>
             Créer une inscription
         </a>
@@ -185,7 +207,7 @@
 
 {% elif user.profile.role == 'tuteur' %}
     {% if not etudiant %}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm fade-in">
         <div class="px-6 py-4 border-b border-slate-100">
             <h3 class="font-semibold text-slate-800 flex items-center gap-2">
                 <span class="material-symbols-outlined text-purple-500">group</span>
@@ -195,9 +217,9 @@
         {% if etudiants %}
         <div class="divide-y divide-slate-50">
             {% for etu in etudiants %}
-            <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors card-hover">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                         {{ etu.username|first|upper }}
                     </div>
                     <div>
@@ -205,7 +227,7 @@
                         <p class="text-xs text-slate-400">Étudiant</p>
                     </div>
                 </div>
-                <a href="{% url 'dashboard_tuteur' etu.id %}" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
+                <a href="{% url 'dashboard_tuteur' etu.id %}" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-xl hover:bg-purple-100 hover:shadow-sm transition-all">
                     <span class="material-symbols-outlined text-lg">visibility</span>
                     Voir le dashboard
                 </a>
@@ -214,14 +236,14 @@
         </div>
         {% else %}
         <div class="text-center py-12 text-slate-400">
-            <span class="material-symbols-outlined text-4xl mb-3 block">group_off</span>
-            <p>Aucun étudiant ne vous est attribué.</p>
+            <span class="material-symbols-outlined text-5xl mb-3 block text-slate-300">group_off</span>
+            <p class="font-medium">Aucun étudiant ne vous est attribué.</p>
         </div>
         {% endif %}
     </div>
 
     {% else %}
-    <div class="mb-6">
+    <div class="mb-6 slide-in">
         <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
             <span class="material-symbols-outlined text-lg">arrow_back</span>
             Retour à la liste des étudiants
@@ -229,11 +251,11 @@
     </div>
 
     {% if inscription %}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
+        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20 card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-purple-200 text-sm font-medium">{{ etudiant.username }}</span>
-                <span class="material-symbols-outlined text-purple-200">person</span>
+                <span class="material-symbols-outlined text-purple-200 fill">person</span>
             </div>
             <div class="flex items-end gap-2">
                 <span class="text-4xl font-bold">
@@ -246,13 +268,13 @@
                 <span class="text-purple-200 text-sm mb-1">/20</span>
             </div>
             {% if moyenne_generale is not None %}
-            <div class="mt-3 h-1.5 bg-purple-500/50 rounded-full overflow-hidden">
-                <div class="h-full bg-white rounded-full transition-all" style="width:{% widthratio moyenne_generale 20 100 %}%"></div>
+            <div class="mt-3 h-2 bg-purple-500/40 rounded-full overflow-hidden">
+                <div class="h-full bg-white rounded-full progress-animated" style="width:{% widthratio moyenne_generale 20 100 %}%"></div>
             </div>
             {% endif %}
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-slate-500 text-sm font-medium">Modules suivis</span>
                 <span class="material-symbols-outlined text-purple-500">menu_book</span>
@@ -261,7 +283,7 @@
             <p class="text-xs text-slate-400 mt-3">Inscription {{ inscription.annee_academique }}</p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
             <div class="flex items-center justify-between mb-4">
                 <span class="text-slate-500 text-sm font-medium">Statut inscription</span>
                 <span class="material-symbols-outlined {% if inscription.statut == 'ouverte' %}text-amber-500{% else %}text-emerald-500{% endif %}">
@@ -269,7 +291,7 @@
                 </span>
             </div>
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700{% else %}bg-emerald-50 text-emerald-700{% endif %}">
+                {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
                 <span class="w-2 h-2 rounded-full {% if inscription.statut == 'ouverte' %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
                 {{ inscription.get_statut_display }}
             </span>
@@ -277,12 +299,12 @@
     </div>
     {% else %}
     <div class="text-center py-10 text-slate-400">
-        <span class="material-symbols-outlined text-5xl mb-3 block">info</span>
+        <span class="material-symbols-outlined text-6xl mb-3 block text-slate-300">info</span>
         <p class="font-medium">Cet étudiant n'a pas encore d'inscription.</p>
     </div>
     {% endif %}
 
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm fade-in">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 class="font-semibold text-slate-800 flex items-center gap-2">
                 <span class="material-symbols-outlined text-purple-500">menu_book</span>
@@ -296,7 +318,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="border-b border-slate-100">
+                    <tr class="border-b border-slate-100 bg-slate-50/50">
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Module</th>
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Coefficient</th>
                         <th class="text-left px-6 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wider">Moyenne</th>
@@ -309,7 +331,7 @@
                         <td class="px-6 py-4">
                             <details class="group">
                                 <summary class="cursor-pointer list-none flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0">
+                                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
                                         <span class="material-symbols-outlined text-white text-base">menu_book</span>
                                     </div>
                                     <span class="font-medium text-slate-800">{{ mc.module_catalogue.intitule }}</span>
@@ -322,7 +344,7 @@
                                         <span class="text-slate-500 w-24">{{ cat.nom }}</span>
                                         <span class="font-medium text-purple-600 w-12">{{ cat.poids }}%</span>
                                         {% if nnotes and cat.id in nnotes %}
-                                        <span class="font-medium text-emerald-600">{{ nnotes|dict_key:cat.id }}</span>
+                                        <span class="font-semibold {% if nnotes|dict_key:cat.id >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ nnotes|dict_key:cat.id }}</span>
                                         <span class="text-slate-400">/ 20</span>
                                         {% else %}
                                         <span class="text-slate-300">—</span>
@@ -333,12 +355,19 @@
                             </details>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">{{ mc.module_catalogue.coefficient }} pts</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if mc.module_catalogue.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                                {% elif mc.module_catalogue.coefficient <= 8 %}bg-amber-50 text-amber-700
+                                {% else %}bg-rose-50 text-rose-700{% endif %}">
+                                {{ mc.module_catalogue.coefficient }} pts
+                            </span>
                         </td>
                         <td class="px-6 py-4">
                             {% if mc.moyenne is not None %}
-                            <span class="font-semibold text-slate-800">{{ mc.moyenne|floatformat:2 }}</span>
-                            <span class="text-slate-400">/ 20</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold {% if mc.moyenne >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ mc.moyenne|floatformat:2 }}</span>
+                                <span class="text-slate-400">/ 20</span>
+                            </div>
                             {% else %}
                             <span class="text-slate-400 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-sm">hourglass_empty</span>
@@ -351,7 +380,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="3" class="px-6 py-10 text-center text-slate-400">
-                            <span class="material-symbols-outlined text-3xl mb-2 block">info</span>
+                            <span class="material-symbols-outlined text-4xl mb-2 block text-slate-300">info</span>
                             Aucun module choisi.
                         </td>
                     </tr>
@@ -360,9 +389,12 @@
             </table>
         </div>
         {% if moyenne_generale is not None %}
-        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-between">
+        <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-between">
             <span class="font-semibold text-slate-700">Moyenne générale</span>
-            <span class="text-2xl font-bold text-purple-600">{{ moyenne_generale|floatformat:2 }} <span class="text-sm font-normal text-slate-400">/ 20</span></span>
+            <span class="text-2xl font-bold {% if moyenne_generale >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">
+                {{ moyenne_generale|floatformat:2 }}
+                <span class="text-sm font-normal text-slate-400">/ 20</span>
+            </span>
         </div>
         {% endif %}
     </div>

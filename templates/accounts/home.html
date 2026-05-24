@@ -2,54 +2,54 @@
 {% block page_title %}Bienvenue{% endblock %}
 {% block page_subtitle %}Application de suivi académique{% endblock %}
 {% block content %}
-<div class="max-w-3xl mx-auto text-center py-8">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-10">
-        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+<div class="max-w-4xl mx-auto py-8 fade-in">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 text-center mb-8">
+        <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/10">
             <span class="material-symbols-outlined text-purple-600 text-4xl">school</span>
         </div>
         <h1 class="text-3xl font-bold text-slate-800 mb-3">Bienvenue sur UniNotes ERP</h1>
-        <p class="text-slate-500 text-lg max-w-lg mx-auto mb-10">
+        <p class="text-slate-500 text-lg max-w-2xl mx-auto mb-10">
             L'application qui vous permet de <strong class="text-slate-700">composer librement votre année</strong>
             en sélectionnant vos modules sous la contrainte de <strong class="text-purple-600">60 points de coefficient</strong>.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-left">
-            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-200 hover:shadow-md transition-all">
-                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-purple-600 text-2xl">catalogue</span>
+            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-white text-2xl">catalogue</span>
                 </div>
                 <h3 class="font-semibold text-slate-800 mb-2">Catalogue</h3>
-                <p class="text-sm text-slate-500">Parcourez les modules proposés et leurs catégories d'évaluation</p>
+                <p class="text-sm text-slate-500">Parcourez les modules proposés et découvrez leurs catégories d'évaluation avec leurs coefficients</p>
             </div>
-            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-200 hover:shadow-md transition-all">
-                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-purple-600 text-2xl">trackpad_target</span>
+            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-white text-2xl">trackpad_target</span>
                 </div>
                 <h3 class="font-semibold text-slate-800 mb-2">60 points</h3>
-                <p class="text-sm text-slate-500">Composez votre panier avec la contrainte stricte des 60 points</p>
+                <p class="text-sm text-slate-500">Composez votre panier avec la contrainte stricte des 60 points et verrouillez votre sélection</p>
             </div>
-            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-200 hover:shadow-md transition-all">
-                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-purple-600 text-2xl">trending_up</span>
+            <div class="border border-slate-200 rounded-xl p-6 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-white text-2xl">trending_up</span>
                 </div>
                 <h3 class="font-semibold text-slate-800 mb-2">Suivi</h3>
-                <p class="text-sm text-slate-500">Saisissez vos notes et suivez votre évolution académique</p>
+                <p class="text-sm text-slate-500">Saisissez vos notes et visualisez l'évolution de votre moyenne générale</p>
             </div>
         </div>
 
         {% if not user.is_authenticated %}
         <div class="flex items-center justify-center gap-4">
-            <a href="{% url 'signup' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25">
+            <a href="{% url 'signup' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25 active:scale-[0.98]">
                 <span class="material-symbols-outlined text-lg">person_add</span>
                 S'inscrire
             </a>
-            <a href="{% url 'login' %}" class="inline-flex items-center gap-2 px-6 py-3 border border-slate-300 text-slate-600 rounded-xl font-medium text-sm hover:bg-slate-50 transition-all">
+            <a href="{% url 'login' %}" class="inline-flex items-center gap-2 px-6 py-3 border border-slate-300 text-slate-600 rounded-xl font-medium text-sm hover:bg-slate-50 hover:border-slate-400 transition-all">
                 <span class="material-symbols-outlined text-lg">login</span>
                 Se connecter
             </a>
         </div>
         {% else %}
-        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25">
+        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25 active:scale-[0.98]">
             <span class="material-symbols-outlined text-lg">dashboard</span>
             Accéder à mon Dashboard
         </a>

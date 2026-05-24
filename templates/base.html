@@ -26,30 +26,30 @@
         <nav class="flex-1 px-3 space-y-1 overflow-y-auto sidebar-scroll">
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                <a href="{% url 'admin:index' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-slate-300 hover:bg-slate-800 hover:text-white {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
                     <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
                     <span class="text-sm font-medium">Administration</span>
                 </a>
                 {% endif %}
                 {% if user.profile.role == 'etudiant' %}
-                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <a href="{% url 'dashboard' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">dashboard</span>
                     <span class="text-sm font-medium">Dashboard</span>
                 </a>
-                <a href="{% url 'catalogue:liste' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if 'catalogue' in request.path %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <a href="{% url 'catalogue:liste' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if 'catalogue' in request.path %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">catalogue</span>
                     <span class="text-sm font-medium">Catalogue</span>
                 </a>
-                <a href="{% url 'inscription:panier' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'panier' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <a href="{% url 'inscription:panier' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'panier' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">shopping_cart</span>
                     <span class="text-sm font-medium">Mon panier</span>
                 </a>
-                <a href="{% url 'notes:courbe' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'courbe' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <a href="{% url 'notes:courbe' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'courbe' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">trending_up</span>
                     <span class="text-sm font-medium">Évolution</span>
                 </a>
                 {% elif user.profile.role == 'tuteur' and not user.is_staff %}
-                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                <a href="{% url 'dashboard' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">group</span>
                     <span class="text-sm font-medium">Mes étudiants</span>
                 </a>
@@ -68,7 +68,7 @@
         {% if user.is_authenticated %}
         <div class="px-4 py-4 border-t border-slate-700/50">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-sm shadow-purple-500/30">
                     {{ user.username|first|upper }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -77,7 +77,7 @@
                 </div>
                 <form method="post" action="{% url 'logout' %}" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="text-slate-400 hover:text-white transition-colors" title="Déconnexion">
+                    <button type="submit" class="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800" title="Déconnexion">
                         <span class="material-symbols-outlined text-xl">logout</span>
                     </button>
                 </form>
@@ -87,7 +87,7 @@
     </aside>
 
     <div class="ml-64 min-h-screen flex flex-col">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+        <header class="bg-white/80 backdrop-blur-sm border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
             <div>
                 <h2 class="text-xl font-bold text-slate-800">{% block page_title %}UniNotes ERP{% endblock %}</h2>
                 <p class="text-sm text-slate-500">{% block page_subtitle %}Application de suivi académique{% endblock %}</p>
@@ -103,12 +103,14 @@
         </header>
 
         {% if messages %}
-        <div class="px-8 pt-6 pb-0">
+        <div class="px-8 pt-6 pb-0 space-y-3">
             {% for msg in messages %}
-            <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-sm border {% if msg.tags == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200{% elif msg.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% elif msg.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200{% else %}bg-blue-50 text-blue-700 border-blue-200{% endif %}">
-                <span class="material-symbols-outlined text-lg">{% if msg.tags == 'success' %}check_circle{% elif msg.tags == 'error' %}error{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}</span>
-                <span>{{ msg }}</span>
-                <button onclick="this.parentElement.remove()" class="ml-auto opacity-60 hover:opacity-100">
+            <div class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium shadow-sm border message-item fade-in {% if msg.tags == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200/50{% elif msg.tags == 'error' %}bg-red-50 text-red-700 border-red-200/50{% elif msg.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200/50{% else %}bg-blue-50 text-blue-700 border-blue-200/50{% endif %}">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg {% if msg.tags == 'success' %}bg-emerald-100{% elif msg.tags == 'error' %}bg-red-100{% elif msg.tags == 'warning' %}bg-amber-100{% else %}bg-blue-100{% endif %}">
+                    <span class="material-symbols-outlined text-lg {% if msg.tags == 'success' %}text-emerald-600{% elif msg.tags == 'error' %}text-red-600{% elif msg.tags == 'warning' %}text-amber-600{% else %}text-blue-600{% endif %}">{% if msg.tags == 'success' %}check_circle{% elif msg.tags == 'error' %}error{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}</span>
+                </span>
+                <span class="flex-1">{{ msg }}</span>
+                <button onclick="this.parentElement.remove()" class="flex items-center justify-center w-6 h-6 rounded-full opacity-50 hover:opacity-100 hover:bg-black/5 transition-all" aria-label="Fermer">
                     <span class="material-symbols-outlined text-lg">close</span>
                 </button>
             </div>
@@ -120,9 +122,11 @@
             {% block content %}{% endblock %}
         </main>
 
-        <footer class="border-t border-slate-200 px-8 py-4 text-center text-xs text-slate-400">
+        <footer class="border-t border-slate-200 px-8 py-4 text-center text-xs text-slate-400 no-print">
             UniNotes ERP &copy; 2026 — Mini-projet Django
         </footer>
     </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

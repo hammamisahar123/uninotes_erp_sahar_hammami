@@ -2,30 +2,57 @@
 {% block page_title %}Catalogue des modules{% endblock %}
 {% block page_subtitle %}Liste des modules disponibles{% endblock %}
 {% block content %}
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="bg-slate-50 border-b border-slate-200">
-                    <th class="text-left px-6 py-4 font-semibold text-slate-700">Intitulé</th>
-                    <th class="text-center px-6 py-4 font-semibold text-slate-700">Coefficient</th>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-700">Description</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                {% for module in modules %}
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 font-medium text-slate-800">{{ module.intitule }}</td>
-                    <td class="px-6 py-4 text-center"><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">{{ module.coefficient }}</span></td>
-                    <td class="px-6 py-4 text-slate-500">{{ module.description|default:"—" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3" class="px-6 py-12 text-center text-slate-400">Aucun module disponible pour le moment.</td>
-                </tr>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 fade-in">
+    {% for module in modules %}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group">
+        <div class="p-5">
+            <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-white text-lg">menu_book</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-800 text-sm leading-tight">{{ module.intitule }}</h3>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold
+                    {% if module.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                    {% elif module.coefficient <= 8 %}bg-amber-50 text-amber-700
+                    {% else %}bg-rose-50 text-rose-700{% endif %}">
+                    <span class="material-symbols-outlined text-sm">speed</span>
+                    {{ module.coefficient }} pts
+                </span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4 line-clamp-2 min-h-[2rem]">{{ module.description|default:"Aucune description" }}</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                {% for cat in module.categories_evaluation.all %}
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-full
+                    {% cycle 'bg-blue-50 text-blue-700' 'bg-emerald-50 text-emerald-700' 'bg-amber-50 text-amber-700' 'bg-rose-50 text-rose-700' 'bg-violet-50 text-violet-700' %}">
+                    <span class="w-1.5 h-1.5 rounded-full
+                        {% cycle 'bg-blue-500' 'bg-emerald-500' 'bg-amber-500' 'bg-rose-500' 'bg-violet-500' %}"></span>
+                    {{ cat.nom }} {{ cat.poids }}%
+                </span>
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        </div>
+        <div class="px-5 py-3 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                <span class="material-symbols-outlined text-sm">info</span>
+                <span>Coefficient <strong class="text-slate-600">{{ module.coefficient }}</strong></span>
+            </div>
+            {% if user.is_authenticated and user.profile.role == 'etudiant' %}
+            <a href="{% url 'inscription:panier' %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-sm hover:shadow-md">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                Panier
+            </a>
+            {% endif %}
+        </div>
     </div>
+    {% empty %}
+    <div class="col-span-full text-center py-16 text-slate-400">
+        <span class="material-symbols-outlined text-6xl mb-4 block text-slate-300">catalogue</span>
+        <p class="text-lg font-medium text-slate-500">Aucun module disponible pour le moment.</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

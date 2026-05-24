@@ -4,88 +4,117 @@
 {% block content %}
 
 {% if user.profile.role != 'etudiant' %}
-<div class="bg-white rounded-2xl border border-slate-200 p-12 shadow-sm text-center">
-    <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">lock</span>
+<div class="bg-white rounded-2xl border border-slate-200 p-12 shadow-sm text-center fade-in">
+    <span class="material-symbols-outlined text-7xl text-slate-200 mb-4 block">lock</span>
     <h3 class="text-xl font-semibold text-slate-800 mb-2">Accès réservé aux étudiants</h3>
     <p class="text-slate-500">Seuls les étudiants peuvent composer leur panier d'inscription.</p>
 </div>
 {% elif inscription.statut == 'ouverte' %}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <div class="flex items-center justify-center">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 fade-in">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+        <div class="flex flex-col items-center">
             <svg viewBox="0 0 120 120" class="w-32 h-32">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#e2e8f0" stroke-width="10"/>
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#8b5cf6" stroke-width="10"
                     stroke-dasharray="339.292" stroke-dashoffset="{{ gauge_offset }}"
-                    stroke-linecap="round" transform="rotate(-90 60 60)"/>
-                <text x="60" y="55" text-anchor="middle" class="text-2xl font-bold" fill="#0f172a" font-size="22" font-weight="700">{{ total_coeff }}</text>
+                    stroke-linecap="round" transform="rotate(-90 60 60)" class="gauge-circle"/>
+                <text x="60" y="55" text-anchor="middle" fill="#0f172a" font-size="22" font-weight="700">{{ total_coeff }}</text>
                 <text x="60" y="75" text-anchor="middle" fill="#94a3b8" font-size="9">/ 60 points</text>
             </svg>
+            <div class="mt-4 w-full">
+                <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full progress-animated {% if total_coeff == 60 %}bg-emerald-500{% elif total_coeff >= 50 %}bg-amber-500{% else %}bg-purple-500{% endif %}" style="width:{% widthratio total_coeff 60 100 %}%"></div>
+                </div>
+                <p class="text-center text-sm text-slate-500 mt-3 font-medium">
+                    {% if points_restants > 0 %}
+                        <span class="text-amber-600"><strong>{{ points_restants }}</strong> points restants</span>
+                    {% else %}
+                        <span class="text-emerald-600 flex items-center justify-center gap-1">
+                            <span class="material-symbols-outlined text-lg">celebration</span>
+                            Objectif atteint !
+                        </span>
+                    {% endif %}
+                </p>
+            </div>
         </div>
-        <p class="text-center text-sm text-slate-500 mt-2">
-            {% if points_restants > 0 %}
-                <span class="font-medium text-amber-600">{{ points_restants }} points restants</span>
-            {% else %}
-                <span class="font-medium text-emerald-600">Objectif atteint !</span>
-            {% endif %}
-        </p>
     </div>
 
-    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 class="font-semibold text-slate-800 flex items-center gap-2">
                 <span class="material-symbols-outlined text-purple-500">shopping_cart</span>
-                Mon panier ({{ modules_choisis|length }})
+                Mon panier
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">{{ modules_choisis|length }}</span>
             </h3>
         </div>
-        {% if modules_choisis %}
-        <div class="space-y-2">
-            {% for mc in modules_choisis %}
-            <div class="flex items-center justify-between px-4 py-3 bg-slate-50 rounded-xl border border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-purple-600 text-lg">menu_book</span>
+        <div class="p-4 max-h-[320px] overflow-y-auto">
+            {% if modules_choisis %}
+            <div class="space-y-2">
+                {% for mc in modules_choisis %}
+                <div class="flex items-center justify-between px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-slate-200 transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-sm">
+                            <span class="material-symbols-outlined text-white text-lg">menu_book</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-800">{{ mc.module_catalogue.intitule }}</p>
+                            <p class="text-xs text-slate-400">{{ mc.module_catalogue.coefficient }} points</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-medium text-slate-800">{{ mc.module_catalogue.intitule }}</p>
-                        <p class="text-xs text-slate-400">{{ mc.module_catalogue.coefficient }} points</p>
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold
+                            {% if mc.module_catalogue.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                            {% elif mc.module_catalogue.coefficient <= 8 %}bg-amber-50 text-amber-700
+                            {% else %}bg-rose-50 text-rose-700{% endif %}">
+                            {{ mc.module_catalogue.coefficient }} pts
+                        </span>
+                        <a href="{% url 'inscription:retirer_module' mc.id %}" class="text-red-300 hover:text-red-500 transition-colors p-1" onclick="return confirm('Retirer {{ mc.module_catalogue.intitule }} du panier ?')">
+                            <span class="material-symbols-outlined text-lg">remove_circle</span>
+                        </a>
                     </div>
                 </div>
-                <a href="{% url 'inscription:retirer_module' mc.id %}" class="text-red-400 hover:text-red-600 transition-colors p-1">
-                    <span class="material-symbols-outlined text-lg">remove_circle</span>
-                </a>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="text-center py-8 text-slate-400">
+                <span class="material-symbols-outlined text-5xl mb-2 block text-slate-300">shopping_cart</span>
+                <p class="text-sm">Panier vide. Ajoutez des modules depuis le catalogue.</p>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="text-center py-8 text-slate-400">
-            <span class="material-symbols-outlined text-4xl mb-2">shopping_cart</span>
-            <p class="text-sm">Panier vide. Ajoutez des modules depuis le catalogue.</p>
-        </div>
-        {% endif %}
     </div>
 </div>
 
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-100">
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden fade-in">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 class="font-semibold text-slate-800 flex items-center gap-2">
             <span class="material-symbols-outlined text-purple-500">catalogue</span>
             Catalogue des modules
         </h3>
+        <span class="text-xs text-slate-400">{{ modules_disponibles|length }} disponible(s)</span>
     </div>
     <div class="p-6">
         {% if modules_disponibles %}
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {% for mod in modules_disponibles %}
-            <div class="border border-slate-200 rounded-xl p-5 hover:border-purple-200 hover:shadow-md transition-all group">
+            <div class="border border-slate-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-md transition-all group {% if mod.coefficient <= points_restants %}hover:bg-purple-50/30{% else %}opacity-60{% endif %}">
                 <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
                             <span class="material-symbols-outlined text-white text-lg">menu_book</span>
                         </div>
-                        <div>
-                            <h4 class="font-semibold text-slate-800 text-sm">{{ mod.intitule }}</h4>
-                            <span class="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">{{ mod.coefficient }} pts</span>
+                        <div class="min-w-0">
+                            <h4 class="font-semibold text-slate-800 text-sm truncate">{{ mod.intitule }}</h4>
+                            <span class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full
+                                {% if mod.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                                {% elif mod.coefficient <= 8 %}bg-amber-50 text-amber-700
+                                {% else %}bg-rose-50 text-rose-700{% endif %}">
+                                <span class="w-1.5 h-1.5 rounded-full
+                                    {% if mod.coefficient <= 5 %}bg-emerald-500
+                                    {% elif mod.coefficient <= 8 %}bg-amber-500
+                                    {% else %}bg-rose-500{% endif %}"></span>
+                                {{ mod.coefficient }} pts
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -93,7 +122,7 @@
                 <div class="flex flex-wrap gap-1.5 mb-4">
                     {% for cat in mod.categories_evaluation.all %}
                     <span class="text-[11px] font-medium px-2 py-0.5 rounded-full
-                        {% cycle 'bg-amber-50 text-amber-700' 'bg-blue-50 text-blue-700' 'bg-emerald-50 text-emerald-700' 'bg-rose-50 text-rose-700' 'bg-violet-50 text-violet-700' %}">
+                        {% cycle 'bg-blue-50 text-blue-700' 'bg-emerald-50 text-emerald-700' 'bg-amber-50 text-amber-700' 'bg-rose-50 text-rose-700' 'bg-violet-50 text-violet-700' %}">
                         {{ cat.nom }} {{ cat.poids }}%
                     </span>
                     {% endfor %}
@@ -101,7 +130,7 @@
                 <div class="flex items-center justify-between pt-3 border-t border-slate-100">
                     <span class="text-xs text-slate-400">Coeff. {{ mod.coefficient }}</span>
                     {% if mod.coefficient <= points_restants %}
-                    <a href="{% url 'inscription:ajouter_module' mod.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                    <a href="{% url 'inscription:ajouter_module' mod.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-all shadow-sm hover:shadow-md">
                         <span class="material-symbols-outlined text-sm">add</span>
                         Ajouter
                     </a>
@@ -117,39 +146,44 @@
         </div>
         {% else %}
         <div class="text-center py-10 text-slate-400">
-            <span class="material-symbols-outlined text-5xl mb-3">check_circle</span>
-            <p class="font-medium">Tous les modules disponibles sont dans votre panier.</p>
+            <span class="material-symbols-outlined text-6xl mb-3 block text-slate-300">check_circle</span>
+            <p class="font-medium text-slate-500">Tous les modules disponibles sont dans votre panier.</p>
         </div>
         {% endif %}
     </div>
 </div>
 
 {% if suggestions %}
-<div class="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-6">
-    <div class="flex items-center gap-2 mb-4">
-        <span class="material-symbols-outlined text-amber-600">lightbulb</span>
-        <h3 class="font-semibold text-amber-800">Suggestions pour vos {{ points_restants }} points restants</h3>
+<div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 fade-in">
+    <div class="flex items-center gap-2 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+            <span class="material-symbols-outlined text-amber-600">lightbulb</span>
+        </div>
+        <div>
+            <h3 class="font-semibold text-amber-800">Suggestions pour vos {{ points_restants }} points restants</h3>
+            <p class="text-xs text-amber-600">Modules recommandés selon vos points disponibles</p>
+        </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {% for mod in suggestions %}
-        <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100">
+        <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100 hover:border-amber-300 hover:shadow-sm transition-all">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
                     <span class="material-symbols-outlined text-amber-600 text-lg">lightbulb</span>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-slate-800">{{ mod.intitule }}</p>
-                    <span class="text-xs font-medium text-amber-600">{{ mod.coefficient }} pts</span>
+                    <span class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">{{ mod.coefficient }} pts</span>
                 </div>
             </div>
-            <a href="{% url 'inscription:ajouter_module' mod.id %}" class="px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded-lg hover:bg-amber-700 transition-colors">Ajouter</a>
+            <a href="{% url 'inscription:ajouter_module' mod.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded-lg hover:bg-amber-700 transition-all shadow-sm">Ajouter</a>
         </div>
         {% endfor %}
     </div>
 </div>
 {% elif points_restants > 0 and modules_disponibles %}
-<div class="mt-6 bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center">
-    <span class="material-symbols-outlined text-3xl text-slate-300 mb-2 block">info</span>
+<div class="mt-6 bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center fade-in">
+    <span class="material-symbols-outlined text-4xl text-slate-300 mb-2 block">info</span>
     <p class="text-sm text-slate-500">
         Aucun module disponible ne correspond à vos <strong>{{ points_restants }} points restants</strong>.
         Vous pouvez retirer un module du panier pour libérer des points et essayer une autre combinaison.
@@ -158,13 +192,13 @@
 {% endif %}
 
 {% else %}
-<div class="max-w-md mx-auto text-center py-16">
-    <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-        <span class="material-symbols-outlined text-4xl text-emerald-600">lock</span>
+<div class="max-w-md mx-auto text-center py-16 fade-in">
+    <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
+        <span class="material-symbols-outlined text-4xl text-emerald-600">verified</span>
     </div>
     <h3 class="text-xl font-bold text-slate-800 mb-2">Inscription verrouillée</h3>
     <p class="text-slate-500 text-sm mb-6">Votre inscription est verrouillée. Vous ne pouvez plus modifier votre sélection de modules.</p>
-    <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 transition-colors">
+    <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl font-medium text-sm hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/25">
         <span class="material-symbols-outlined text-lg">dashboard</span>
         Accéder à mes notes
     </a>

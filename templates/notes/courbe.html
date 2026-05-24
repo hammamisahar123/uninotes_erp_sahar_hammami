@@ -3,51 +3,79 @@
 {% block page_subtitle %}Étudiant : <strong>{{ etudiant.username }}</strong>{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-    {% if dates != '[]' %}
-    <div>
-        <div style="height:400px">
-            <canvas id="courbeChart"></canvas>
-        </div>
-    </div>
-    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-100">
-        <div class="flex items-center gap-4 text-sm text-slate-500">
-            <span class="flex items-center gap-1.5">
+<div class="grid grid-cols-1 gap-6 fade-in">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-purple-500">trending_up</span>
+                Évolution de la moyenne générale
+            </h3>
+            <div class="flex items-center gap-2 text-xs text-slate-400">
                 <span class="w-3 h-3 rounded-full bg-purple-500"></span>
-                Évolution de la moyenne
-            </span>
+                <span>Moyenne /20</span>
+            </div>
         </div>
-        <div class="flex items-center gap-2 text-xs text-slate-400">
-            <span class="material-symbols-outlined text-sm">info</span>
-            Chaque point représente une saisie de note
+        <div class="p-6">
+            {% if dates != '[]' %}
+            <div style="height:380px; position:relative;">
+                <canvas id="courbeChart"></canvas>
+            </div>
+            {% else %}
+            <div class="text-center py-16 text-slate-400">
+                <span class="material-symbols-outlined text-6xl mb-4 block text-slate-300">insights</span>
+                <p class="text-lg font-medium text-slate-500 mb-1">Aucune donnée disponible</p>
+                <p class="text-sm">Saisissez des notes pour voir votre courbe d'évolution.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
-    {% else %}
-    <div class="text-center py-16 text-slate-400">
-        <span class="material-symbols-outlined text-5xl mb-4 block">insights</span>
-        <p class="text-lg font-medium text-slate-500 mb-1">Aucune donnée disponible</p>
-        <p class="text-sm">Saisissez des notes pour voir votre courbe d'évolution.</p>
-    </div>
-    {% endif %}
-</div>
 
-<div class="mt-6 flex items-center gap-3">
-    <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
-        <span class="material-symbols-outlined text-lg">arrow_back</span>
-        Retour
-    </a>
-    {% if user.profile.role == 'tuteur' %}
-    <a href="{% url 'dashboard_tuteur' etudiant.id %}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-50 text-purple-600 rounded-xl text-sm font-medium hover:bg-purple-100 transition-colors">
-        <span class="material-symbols-outlined text-lg">dashboard</span>
-        Dashboard étudiant
-    </a>
+    {% if dates != '[]' %}
+    <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20">
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+                <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Notes saisies</p>
+                <p class="text-2xl font-bold mt-1">{{ valeurs|length }}</p>
+            </div>
+            <div>
+                <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Dernière moyenne</p>
+                <p class="text-2xl font-bold mt-1">
+                    {% with last=valeurs|last %}{{ last }}{% endwith %}
+                    <span class="text-purple-200 text-sm font-normal">/20</span>
+                </p>
+            </div>
+            <div>
+                <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Max atteint</p>
+                <p class="text-2xl font-bold mt-1">{{ valeurs|cut:"["|cut:"]"|cut:" "|split:","|first|default:"—" }}</p>
+            </div>
+        </div>
+    </div>
     {% endif %}
+
+    <div class="flex items-center gap-3">
+        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 hover:border-slate-400 transition-all">
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            Retour
+        </a>
+        {% if user.profile.role == 'tuteur' %}
+        <a href="{% url 'dashboard_tuteur' etudiant.id %}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-50 text-purple-600 rounded-xl text-sm font-medium hover:bg-purple-100 transition-all">
+            <span class="material-symbols-outlined text-lg">dashboard</span>
+            Dashboard étudiant
+        </a>
+        {% endif %}
+    </div>
 </div>
 
 {% if dates != '[]' %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const ctx = document.getElementById('courbeChart').getContext('2d');
+
+const gradient = ctx.createLinearGradient(0, 0, 0, 380);
+gradient.addColorStop(0, 'rgba(139, 92, 246, 0.25)');
+gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.08)');
+gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
+
 new Chart(ctx, {
     type: 'line',
     data: {
@@ -56,32 +84,59 @@ new Chart(ctx, {
             label: 'Moyenne générale',
             data: {{ valeurs|safe }},
             borderColor: '#8b5cf6',
-            backgroundColor: 'rgba(139, 92, 246, 0.08)',
+            backgroundColor: gradient,
+            borderWidth: 3,
             fill: true,
-            tension: 0.3,
+            tension: 0.35,
             pointBackgroundColor: '#8b5cf6',
             pointBorderColor: '#fff',
-            pointBorderWidth: 2,
+            pointBorderWidth: 2.5,
             pointRadius: 5,
-            pointHoverRadius: 7,
+            pointHoverRadius: 8,
+            pointHoverBackgroundColor: '#7c3aed',
+            pointHoverBorderWidth: 3,
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
+        },
+        interaction: {
+            intersect: false,
+            mode: 'index',
+        },
         plugins: {
-            legend: { display: false }
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#1e293b',
+                titleColor: '#94a3b8',
+                bodyColor: '#fff',
+                bodyFont: { weight: 'bold' },
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: false,
+                callbacks: {
+                    label: function(context) {
+                        return context.parsed.y + ' / 20';
+                    }
+                }
+            }
         },
         scales: {
             y: {
                 min: 0,
                 max: 20,
-                title: { display: true, text: 'Moyenne / 20', font: { weight: 'bold', size: 12 } },
-                grid: { color: 'rgba(0,0,0,0.05)' }
+                title: { display: true, text: 'Moyenne / 20', font: { weight: 'bold', size: 12, family: 'Inter' }, color: '#94a3b8' },
+                grid: { color: 'rgba(0,0,0,0.04)' },
+                ticks: { stepSize: 5, color: '#94a3b8', font: { size: 11 } }
             },
             x: {
-                title: { display: true, text: 'Date de saisie', font: { weight: 'bold', size: 12 } },
-                grid: { display: false }
+                title: { display: true, text: 'Date de saisie', font: { weight: 'bold', size: 12, family: 'Inter' }, color: '#94a3b8' },
+                grid: { display: false },
+                ticks: { color: '#94a3b8', font: { size: 11 }, maxRotation: 30 }
             }
         }
     }
