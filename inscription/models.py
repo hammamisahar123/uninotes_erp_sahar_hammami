@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from catalogue.models import CatalogueModule
+from .managers import ModuleChoisiQuerySet
 
 
 class Inscription(models.Model):
@@ -50,10 +51,13 @@ class ModuleChoisi(models.Model):
         related_name='modules_choisis', verbose_name="Inscription"
     )
     # Référence vers le catalogue (séparation Référentiel / Choix)
+    # PROTECT empêche la suppression d'un module référencé (CDC 3.B.5)
     module_catalogue = models.ForeignKey(
-        CatalogueModule, on_delete=models.CASCADE,
+        CatalogueModule, on_delete=models.PROTECT,
         related_name='choix_etudiants', verbose_name="Module du catalogue"
     )
+
+    objects = ModuleChoisiQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Module choisi"

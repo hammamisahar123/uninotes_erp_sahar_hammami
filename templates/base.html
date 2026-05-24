@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniNotes ERP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-slate-50">
+    <aside class="fixed left-0 top-0 h-full w-64 bg-slate-900 text-white z-50 flex flex-col">
+        <div class="px-6 py-6">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-purple-400 text-3xl">school</span>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">UniNotes</h1>
+                    <p class="text-[10px] text-slate-400 -mt-0.5 uppercase tracking-widest">ERP</p>
+                </div>
+            </div>
+        </div>
+        <nav class="flex-1 px-3 space-y-1 overflow-y-auto sidebar-scroll">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+                    <span class="text-sm font-medium">Administration</span>
+                </a>
+                {% endif %}
+                {% if user.profile.role == 'etudiant' %}
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <span class="material-symbols-outlined text-xl">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="{% url 'inscription:panier' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'panier' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                    <span class="text-sm font-medium">Mon panier</span>
+                </a>
+                <a href="{% url 'notes:courbe' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'courbe' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <span class="material-symbols-outlined text-xl">trending_up</span>
+                    <span class="text-sm font-medium">Évolution</span>
+                </a>
+                {% elif user.profile.role == 'tuteur' and not user.is_staff %}
+                <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <span class="material-symbols-outlined text-xl">group</span>
+                    <span class="text-sm font-medium">Mes étudiants</span>
+                </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-xl">login</span>
+                    <span class="text-sm font-medium">Connexion</span>
+                </a>
+                <a href="{% url 'signup' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-xl">person_add</span>
+                    <span class="text-sm font-medium">Inscription</span>
+                </a>
+            {% endif %}
+        </nav>
+        {% if user.is_authenticated %}
+        <div class="px-4 py-4 border-t border-slate-700/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                    {{ user.username|first|upper }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ user.username }}</p>
+                    <p class="text-[11px] text-slate-400 capitalize">{% if user.is_staff %}Administrateur{% else %}{{ user.profile.get_role_display }}{% endif %}</p>
+                </div>
+                <form method="post" action="{% url 'logout' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-slate-400 hover:text-white transition-colors" title="Déconnexion">
+                        <span class="material-symbols-outlined text-xl">logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </aside>
+
+    <div class="ml-64 min-h-screen flex flex-col">
+        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">{% block page_title %}UniNotes ERP{% endblock %}</h2>
+                <p class="text-sm text-slate-500">{% block page_subtitle %}Application de suivi académique{% endblock %}</p>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg text-sm text-slate-600">
+                    <span class="material-symbols-outlined text-lg">calendar_month</span>
+                    <span class="hidden sm:inline">Année 2025/2026</span>
+                </div>
+            </div>
+            {% endif %}
+        </header>
+
+        {% if messages %}
+        <div class="px-8 pt-6 pb-0">
+            {% for msg in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-sm border {% if msg.tags == 'success' %}bg-emerald-50 text-emerald-700 border-emerald-200{% elif msg.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% elif msg.tags == 'warning' %}bg-amber-50 text-amber-700 border-amber-200{% else %}bg-blue-50 text-blue-700 border-blue-200{% endif %}">
+                <span class="material-symbols-outlined text-lg">{% if msg.tags == 'success' %}check_circle{% elif msg.tags == 'error' %}error{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}</span>
+                <span>{{ msg }}</span>
+                <button onclick="this.parentElement.remove()" class="ml-auto opacity-60 hover:opacity-100">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="flex-1 p-8">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-slate-200 px-8 py-4 text-center text-xs text-slate-400">
+            UniNotes ERP &copy; 2026 — Mini-projet Django
+        </footer>
+    </div>
+</body>
+</html>

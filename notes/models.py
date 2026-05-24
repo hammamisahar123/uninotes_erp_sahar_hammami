@@ -1,6 +1,7 @@
 from django.db import models
 from inscription.models import ModuleChoisi
 from catalogue.models import CategorieEvaluation
+from .managers import NoteQuerySet
 
 
 class Note(models.Model):
@@ -26,6 +27,8 @@ class Note(models.Model):
     )
     # Date de saisie pour la reconstitution historique (courbe d'évolution)
     date_saisie = models.DateTimeField(auto_now_add=True, verbose_name="Date de saisie")
+
+    objects = NoteQuerySet.as_manager()
 
     class Meta:
         verbose_name = "Note"
