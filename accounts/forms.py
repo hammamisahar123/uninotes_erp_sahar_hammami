@@ -3,6 +3,12 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import Profile
 
+INPUT_CLASSES = (
+    'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm '
+    'focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 '
+    'outline-none transition-all placeholder:text-slate-400'
+)
+
 
 class LoginForm(AuthenticationForm):
     error_messages = {
@@ -16,7 +22,7 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Nom d'utilisateur",
         widget=forms.TextInput(attrs={
-            'class': 'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none transition-all placeholder:text-slate-400',
+            'class': INPUT_CLASSES,
             'placeholder': 'Votre nom d\'utilisateur',
             'required': True,
             'autofocus': True,
@@ -25,7 +31,7 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(
         label="Mot de passe",
         widget=forms.PasswordInput(attrs={
-            'class': 'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none transition-all placeholder:text-slate-400',
+            'class': INPUT_CLASSES,
             'placeholder': 'Votre mot de passe',
             'required': True,
         })
@@ -50,7 +56,7 @@ class SignupForm(UserCreationForm):
         self.fields['username'].label = "Nom d'utilisateur"
         self.fields['username'].help_text = "150 caractères maximum. Lettres, chiffres et @/. /+/-/_ uniquement."
         self.fields['username'].widget.attrs.update({
-            'class': 'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none transition-all placeholder:text-slate-400',
+            'class': INPUT_CLASSES,
             'placeholder': "Choisissez un nom d'utilisateur",
         })
 
@@ -60,14 +66,14 @@ class SignupForm(UserCreationForm):
             "courant ou entièrement numérique."
         )
         self.fields['password1'].widget.attrs.update({
-            'class': 'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none transition-all placeholder:text-slate-400',
+            'class': INPUT_CLASSES,
             'placeholder': 'Créez un mot de passe',
         })
 
         self.fields['password2'].label = "Confirmation du mot de passe"
         self.fields['password2'].help_text = "Saisissez le même mot de passe pour vérification."
         self.fields['password2'].widget.attrs.update({
-            'class': 'w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 outline-none transition-all placeholder:text-slate-400',
+            'class': INPUT_CLASSES,
             'placeholder': 'Confirmez le mot de passe',
         })
 

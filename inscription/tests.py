@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from accounts.models import Profile
+
 from catalogue.models import CatalogueModule, CategorieEvaluation
 from inscription.models import Inscription, ModuleChoisi
 from inscription.services import PanierService

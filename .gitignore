@@ -2,3 +2,6 @@
 __pycache__/
 db.sqlite3
 *.pyc
+.env
+node_modules/
+static/css/tailwind.css

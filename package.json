@@ -1,0 +1,25 @@
+{
+  "name": "uninotes_erp_sahar_hammami",
+  "version": "1.0.0",
+  "description": "Application web de suivi académique permettant à un étudiant de composer librement son année en sélectionnant des modules dans un catalogue (contrainte stricte de 60 points de coefficient), de saisir ses notes et de suivre son évolution.",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./static/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./static/css/tailwind.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hammamisahar123/uninotes_erp_sahar_hammami.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hammamisahar123/uninotes_erp_sahar_hammami/issues"
+  },
+  "homepage": "https://github.com/hammamisahar123/uninotes_erp_sahar_hammami#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

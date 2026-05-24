@@ -1,6 +1,4 @@
 import math
-from django.db.models import Sum, Value
-from django.db.models.functions import Coalesce
 from inscription.models import Inscription, ModuleChoisi
 from catalogue.models import CatalogueModule
 
@@ -10,7 +8,7 @@ class PanierService:
 
     def __init__(self, user):
         self.user = user
-        self.inscription, self._created = Inscription.objects.get_or_create(
+        self.inscription, _ = Inscription.objects.get_or_create(
             etudiant=user, annee_academique="2025/2026",
             defaults={'statut': 'ouverte'}
         )

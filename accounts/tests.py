@@ -1,7 +1,5 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.db import IntegrityError
-from accounts.models import Profile
 
 def _make_user(username='test_user', password='testpass123'):
     return User.objects.create_user(username=username, password=password)
