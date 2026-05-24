@@ -36,17 +36,16 @@ class NoteService:
         for cat in self.categories:
             key = f"note_{cat.id}"
             if key in post_data and post_data[key].strip() != '':
-                valeur = float(post_data[key])
+                try:
+                    valeur = float(post_data[key])
+                except ValueError:
+                    messages_notes.append(("error", f"Valeur invalide pour {cat.nom}."))
+                    continue
                 if valeur < 0 or valeur > 20:
                     messages_notes.append(("error", "La note saisie doit être comprise entre 0 et 20."))
                     continue
                 if cat.id in notes_actuelles:
                     if notes_actuelles[cat.id] == valeur:
-                        messages_notes.append((
-                            "error",
-                            f"Une note a déjà été saisie pour la catégorie {cat.nom} "
-                            f"du module {self.module_choisi.module_catalogue.intitule}."
-                        ))
                         continue
                     Note.objects.update_or_create(
                         module_choisi=self.module_choisi, categorie_evaluation=cat,
@@ -74,17 +73,18 @@ class CourbeService:
         ).order_by('date_saisie')
 
     def get_data(self):
-        notes = self.get_all_notes()
-        if not notes.exists():
+        notes = list(self.get_all_notes())
+        if not notes:
             return {'etudiant': self.etudiant, 'dates': '[]', 'valeurs': '[]'}
 
         dates, valeurs = [], []
-        for i in range(len(notes)):
-            subset_ids = [n.id for n in notes[:i + 1]]
+        note_ids = []
+        for note in notes:
+            note_ids.append(note.id)
             moyenne = ModuleChoisi.objects.filter(
                 inscription__etudiant=self.etudiant
-            ).moyenne_ponderee_a_la_date(subset_ids)
-            dates.append(notes[i].date_saisie.strftime('%d/%m %H:%M'))
+            ).moyenne_ponderee_a_la_date(note_ids)
+            dates.append(note.date_saisie.strftime('%d/%m %H:%M'))
             valeurs.append(round(moyenne, 2))
 
         return {

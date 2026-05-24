@@ -33,7 +33,12 @@ class CatalogueModuleAdmin(admin.ModelAdmin):
     def nb_categories(self, obj):
         return obj.categories_evaluation.count()
     nb_categories.short_description = "Catégories"
-    nb_categories.admin_order_field = 'categories_evaluation__count'
+    nb_categories.admin_order_field = 'nb_categories'
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            nb_categories=models.Count('categories_evaluation')
+        )
 
     def delete_model(self, request, obj):
         try:

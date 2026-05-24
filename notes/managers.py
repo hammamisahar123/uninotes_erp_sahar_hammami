@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, F, Value, FloatField, OuterRef, Subquery
+from django.db.models import Sum, F, Value, FloatField
 from django.db.models.functions import Coalesce, Cast
 
 
@@ -16,4 +16,5 @@ class NoteQuerySet(models.QuerySet):
 
     def en_dict_par_categorie(self):
         return {n['categorie_evaluation_id']: float(n['valeur'])
+                if n['valeur'] is not None else None
                 for n in self.values('categorie_evaluation_id', 'valeur')}

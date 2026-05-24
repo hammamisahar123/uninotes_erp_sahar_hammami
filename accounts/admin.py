@@ -51,7 +51,7 @@ class ProfileInline(admin.StackedInline):
     form = ProfileAdminForm
     can_delete = False
     verbose_name = "Profil"
-    verbose_name_plural = "Profil"
+    verbose_name_plural = "Profils"
     fieldsets = [
         ('Rôle', {'fields': ['role']}),
         ('Parrainage', {

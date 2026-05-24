@@ -1,6 +1,14 @@
 import math
+from datetime import date
 from inscription.models import Inscription, ModuleChoisi
 from catalogue.models import CatalogueModule
+
+
+def _annee_courante():
+    today = date.today()
+    if today.month >= 9:
+        return f"{today.year}/{today.year + 1}"
+    return f"{today.year - 1}/{today.year}"
 
 
 class PanierService:
@@ -9,7 +17,7 @@ class PanierService:
     def __init__(self, user):
         self.user = user
         self.inscription, _ = Inscription.objects.get_or_create(
-            etudiant=user, annee_academique="2025/2026",
+            etudiant=user, annee_academique=_annee_courante(),
             defaults={'statut': 'ouverte'}
         )
 
@@ -47,7 +55,10 @@ class PanierService:
         if self.est_verrouille():
             return False, "Votre inscription est verrouillée. Aucune modification n'est possible."
 
-        module = CatalogueModule.objects.get(id=module_id, est_actif=True)
+        try:
+            module = CatalogueModule.objects.get(id=module_id, est_actif=True)
+        except CatalogueModule.DoesNotExist:
+            return False, "Module introuvable ou inactif."
 
         if ModuleChoisi.objects.filter(inscription=self.inscription, module_catalogue=module).exists():
             return False, "Ce module est déjà dans votre panier."
@@ -73,7 +84,10 @@ class PanierService:
         return True, f"{module.intitule} ajouté au panier."
 
     def retirer_module(self, module_choisi_id):
-        mc = ModuleChoisi.objects.get(id=module_choisi_id, inscription__etudiant=self.user)
+        try:
+            mc = ModuleChoisi.objects.get(id=module_choisi_id, inscription__etudiant=self.user)
+        except ModuleChoisi.DoesNotExist:
+            return False, "Module introuvable dans votre panier."
         if mc.inscription.statut != 'ouverte':
             return False, "Votre inscription est verrouillée. Aucune modification n'est possible."
         mc.delete()

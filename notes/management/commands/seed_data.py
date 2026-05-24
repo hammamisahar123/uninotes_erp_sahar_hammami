@@ -1,7 +1,14 @@
+from datetime import date
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from accounts.models import Profile
 from catalogue.models import CatalogueModule, CategorieEvaluation
+
+
+def _annee_courante():
+    today = date.today()
+    if today.month >= 9:
+        return f"{today.year}/{today.year + 1}"
+    return f"{today.year - 1}/{today.year}"
 from inscription.models import Inscription, ModuleChoisi
 from notes.models import Note
 
@@ -104,14 +111,15 @@ class Command(BaseCommand):
         self.stdout.write("  [OK] Categories d evaluation creees")
 
         # --- 3 INSCRIPTIONS ---
+        annee = _annee_courante()
         ins1 = Inscription.objects.create(
-            etudiant=etu1, annee_academique="2025/2026", statut="verrouillee"
+            etudiant=etu1, annee_academique=annee, statut="verrouillee"
         )
         ins2 = Inscription.objects.create(
-            etudiant=etu2, annee_academique="2025/2026", statut="verrouillee"
+            etudiant=etu2, annee_academique=annee, statut="verrouillee"
         )
         ins3 = Inscription.objects.create(
-            etudiant=etu3, annee_academique="2025/2026", statut="ouverte"
+            etudiant=etu3, annee_academique=annee, statut="ouverte"
         )
 
         self.stdout.write("  [OK] Inscriptions creees")

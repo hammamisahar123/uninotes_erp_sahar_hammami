@@ -36,6 +36,10 @@
                     <span class="material-symbols-outlined text-xl">dashboard</span>
                     <span class="text-sm font-medium">Dashboard</span>
                 </a>
+                <a href="{% url 'catalogue:liste' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if 'catalogue' in request.path %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <span class="material-symbols-outlined text-xl">catalogue</span>
+                    <span class="text-sm font-medium">Catalogue</span>
+                </a>
                 <a href="{% url 'inscription:panier' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'panier' %}bg-purple-500/10 text-purple-400{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">shopping_cart</span>
                     <span class="text-sm font-medium">Mon panier</span>
@@ -92,7 +96,7 @@
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg text-sm text-slate-600">
                     <span class="material-symbols-outlined text-lg">calendar_month</span>
-                    <span class="hidden sm:inline">Année 2025/2026</span>
+                    <span class="hidden sm:inline">Année {{ ANNEE_ACADEMIQUE }}</span>
                 </div>
             </div>
             {% endif %}

@@ -82,5 +82,5 @@ class SignupForm(UserCreationForm):
         role = self.cleaned_data['role']
         if commit:
             user.save()
-            Profile.objects.update_or_create(user=user, defaults={'role': role})
+            Profile.objects.filter(user=user).update(role=role)
         return user
