@@ -109,7 +109,7 @@ uninotes_erp_sahar_hammami/
 | sarah.trabelsi | Étudiant | password123 |
 | mehdi.khalil | Étudiant | password123 |
 
-## Modules du catalogue (12 modules, 60 points)
+## Modules du catalogue (18 modules, max 60 points par étudiant)
 
 | Module | Coefficient |
 |---|---|
@@ -125,12 +125,36 @@ uninotes_erp_sahar_hammami/
 | Système de gestion de base de données | 5 |
 | Techniques d'estimation pour l'ingénieur | 5 |
 | Techniques d'optimisation | 5 |
+| Sécurité des systèmes d'information | 8 |
+| Cloud Computing et DevOps | 10 |
+| Blockchain et applications décentralisées | 12 |
+| Internet des Objets (IoT) | 3 |
+| Big Data Analytics | 7 |
+| Cybersécurité offensive | 15 |
 
-## Gestion de l'intégrité référentielle
+## Gestion de l'intégrité référentielle (3.B.5)
 
-Stratégie choisie pour la suppression d'un module du catalogue :
-- **Protection par contrainte de clé étrangère** : la suppression est refusée si le module est référencé par des choix d'étudiants.
-- Alternative implémentée : archivage via le champ `est_actif` (le module est masqué du catalogue mais les données existantes sont préservées).
+Deux stratégies sont implémentées pour protéger les données lors de la suppression d'un module du catalogue :
+
+### 1. Protection par contrainte de clé étrangère (PROTECT)
+
+La clé étrangère `module_catalogue` dans le modèle `ModuleChoisi` utilise `on_delete=models.PROTECT`.  
+Toute tentative de suppression d'un `CatalogueModule` référencé par au moins un `ModuleChoisi` déclenche une `ProtectedError`.
+
+**Comportement dans l'interface d'administration :**
+- La méthode `delete_model()` de `CatalogueModuleAdmin` intercepte l'erreur et affiche un message d'erreur explicite indiquant le nombre de choix d'étudiants concernés.
+- La méthode `delete_queryset()` gère les suppressions en lot avec le même mécanisme.
+- L'administrateur est invité à utiliser l'archivage comme alternative.
+
+### 2. Archivage via le champ `est_actif`
+
+Le champ booléen `est_actif` (défaut : `True`) sur `CatalogueModule` permet de masquer un module sans le supprimer :
+
+- Dans l'admin, décocher la case "Actif" dans la liste ou modifier le champ dans le formulaire de détail.
+- Les modules inactifs sont exclus de l'affichage dans le catalogue (`catalogue/views.py`), le panier (`inscription/services.py`) et la suggestion de modules.
+- Les données existantes (`ModuleChoisi`, `Note`, moyennes) sont intégralement conservées.
+- Les étudiants ayant déjà sélectionné le module conservent leur choix et leurs notes. 
+- Le module reste accessible en requêtage direct via l'ORM si nécessaire (ex. re-calcul de moyennes historiques).
 
 ## Limites et améliorations possibles
 

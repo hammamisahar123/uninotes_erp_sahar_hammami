@@ -43,20 +43,27 @@ class Command(BaseCommand):
 
         self.stdout.write("  [OK] Utilisateurs crees")
 
-        # --- 12 MODULES DU CATALOGUE (total coefficients = 60) ---
+        # --- 18 MODULES DU CATALOGUE (12 premiers totalisent 60, 6 supplémentaires pour tester dépassement)
         modules_data = [
-            ("Algorithmique et Problem Solving", 5, ""),
-            ("Conception orientée objet et programmation Java", 6, ""),
-            ("Data warehousing", 4, ""),
-            ("Framework Python pour le web", 6, ""),
-            ("Fundamentals on Deep Learning", 4, ""),
-            ("Génie logiciel", 6, ""),
-            ("Machine Learning basics", 5, ""),
-            ("Multimodal AI", 4, ""),
-            ("Python pour l'ingénierie des données", 5, ""),
-            ("Système de gestion de base de données", 5, ""),
-            ("Techniques d'estimation pour l'ingénieur", 5, ""),
-            ("Techniques d'optimisation", 5, ""),
+            ("Algorithmique et Problem Solving", 5, "Résolution de problèmes complexes, analyse algorithmique, structures de données avancées"),
+            ("Conception orientée objet et programmation Java", 6, "POO, héritage, polymorphisme, Java, design patterns"),
+            ("Data warehousing", 4, "Entrepôts de données, ETL, modélisation dimensionnelle, OLAP"),
+            ("Framework Python pour le web", 6, "Django, ORM, vues, templates, formulaires, déploiement"),
+            ("Fundamentals on Deep Learning", 4, "Réseaux de neurones, backpropagation, CNN, RNN"),
+            ("Génie logiciel", 6, "Méthodes agiles, UML, gestion de projet, qualité logicielle"),
+            ("Machine Learning basics", 5, "Régression, classification, clustering, évaluation de modèles"),
+            ("Multimodal AI", 4, "IA multimodale, fusion de données, vision et langage"),
+            ("Python pour l'ingénierie des données", 5, "Pandas, NumPy, scraping, visualisation, pipelines"),
+            ("Système de gestion de base de données", 5, "SQL avancé, optimisation, transactions, indexation"),
+            ("Techniques d'estimation pour l'ingénieur", 5, "Estimation de coûts, analyse de risques, prévision"),
+            ("Techniques d'optimisation", 5, "Programmation linéaire, optimisation combinatoire, algorithmes gloutons"),
+            # Modules supplémentaires pour tester le dépassement de la limite des 60 points
+            ("Sécurité des systèmes d'information", 8, "Cryptographie, sécurité réseau, authentification, gestion des risques"),
+            ("Cloud Computing et DevOps", 10, "Virtualisation, conteneurisation, CI/CD, orchestration, infrastructure as code"),
+            ("Blockchain et applications décentralisées", 12, "Chaînes de blocs, contrats intelligents, consensus, DApps"),
+            ("Internet des Objets (IoT)", 3, "Capteurs, protocoles IoT, embarqué, traitement de flux"),
+            ("Big Data Analytics", 7, "Traitement distribué, Spark, Kafka, analyse en temps réel, data lake"),
+            ("Cybersécurité offensive", 15, "Pentesting, analyse de vulnérabilités, forensique, reverse engineering"),
         ]
         modules = []
         for intitule, coeff, desc in modules_data:
@@ -65,15 +72,33 @@ class Command(BaseCommand):
             )
             modules.append(mod)
 
-        self.stdout.write("  [OK] 12 modules du catalogue crees")
+        self.stdout.write(f"  [OK] {len(modules)} modules du catalogue crees")
 
-        # --- CATÉGORIES D'ÉVALUATION pour chaque module ---
-        categories_data = [
-            ("CC", 40, "Contrôle Continu"),
-            ("EXAM", 60, "Examen Terminal"),
+        # --- CATÉGORIES D'ÉVALUATION — types variés par module ---
+        categories_by_module = [
+            # Indice 0-11 : modules du panier de base (12 premiers)
+            [("CC", 40), ("EXAM", 60)],
+            [("CC", 30), ("TP", 30), ("EXAM", 40)],
+            [("CC", 40), ("Projet", 30), ("EXAM", 30)],
+            [("TP", 40), ("Projet", 60)],
+            [("CC", 20), ("EXAM", 50), ("Projet", 30)],
+            [("CC", 30), ("EXAM", 40), ("TP", 30)],
+            [("CC", 40), ("EXAM", 60)],
+            [("CC", 30), ("Projet", 40), ("EXAM", 30)],
+            [("TP", 50), ("Projet", 50)],
+            [("CC", 40), ("EXAM", 60)],
+            [("CC", 40), ("EXAM", 60)],
+            [("CC", 40), ("EXAM", 60)],
+            # Indice 12-17 : modules supplémentaires
+            [("CC", 30), ("TP", 30), ("EXAM", 40)],
+            [("TP", 50), ("Projet", 50)],
+            [("CC", 20), ("Projet", 40), ("EXAM", 40)],
+            [("CC", 40), ("EXAM", 60)],
+            [("CC", 30), ("EXAM", 40), ("TP", 30)],
+            [("TP", 40), ("Projet", 60)],
         ]
-        for mod in modules:
-            for nom, poids, _ in categories_data:
+        for mod, cats in zip(modules, categories_by_module):
+            for nom, poids in cats:
                 CategorieEvaluation.objects.create(nom=nom, poids=poids, module=mod)
 
         self.stdout.write("  [OK] Categories d evaluation creees")
@@ -92,10 +117,10 @@ class Command(BaseCommand):
         self.stdout.write("  [OK] Inscriptions creees")
 
         # --- MODULES CHOISIS ---
-        # etu1: total 60 (8+6+7+6+8+5+4+6+5+5 = 60) - tous les modules
-        etu1_modules = modules  # 60 points
+        # etu1: les 12 premiers modules (total coefficients = 60)
+        etu1_modules = modules[:12]  # 60 points
 
-        # etu2: 8+7+8+6+6+5+5+6+5+4 = 60 - tous sauf un différent
+        # etu2: 10 modules (total coefficients = 50 - inscription partielle)
         etu2_modules = [
             modules[1], modules[4], modules[6], modules[0],
             modules[2], modules[5], modules[7], modules[3],
