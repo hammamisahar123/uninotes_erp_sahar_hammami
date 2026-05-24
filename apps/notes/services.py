@@ -62,7 +62,17 @@ class NoteService:
 
 
 class CourbeService:
-    """Service métier pour la courbe d'évolution."""
+    """Service métier pour la courbe d'évolution.
+
+    3.F.1 : Visualisation graphique de l'évolution de la moyenne générale.
+    Axe X = dates de saisie, Axe Y = moyenne. Chaque point = moyenne
+    calculée à cette date en ne tenant compte que des notes saisies jusque-là.
+
+    3.F.2 : Reconstitution historique — pour chaque date D, on ne considère
+    que les notes dont la date_saisie ≤ D. Approche chronologique avec
+    itération Python (nécessaire pour la dimension temporelle) et calculs
+    ORM agrégés (Subquery, annotate, Sum) pour les moyennes.
+    """
 
     def __init__(self, etudiant):
         self.etudiant = etudiant
