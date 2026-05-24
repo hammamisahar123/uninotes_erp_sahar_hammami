@@ -31,15 +31,15 @@
                     <span class="text-sm font-medium">Administration</span>
                 </a>
                 {% endif %}
-                {% if user.profile.role == 'etudiant' %}
                 <a href="{% url 'dashboard' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                    <span class="material-symbols-outlined text-xl">dashboard</span>
-                    <span class="text-sm font-medium">Dashboard</span>
+                    <span class="material-symbols-outlined text-xl">{% if user.profile.role == 'tuteur' %}group{% else %}dashboard{% endif %}</span>
+                    <span class="text-sm font-medium">{% if user.profile.role == 'tuteur' %}Mes étudiants{% else %}Dashboard{% endif %}</span>
                 </a>
                 <a href="{% url 'catalogue:liste' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if 'catalogue' in request.path %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                    <span class="material-symbols-outlined text-xl">catalogue</span>
+                    <span class="material-symbols-outlined text-xl">menu_book</span>
                     <span class="text-sm font-medium">Catalogue</span>
                 </a>
+                {% if user.profile.role == 'etudiant' %}
                 <a href="{% url 'inscription:panier' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'panier' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">shopping_cart</span>
                     <span class="text-sm font-medium">Mon panier</span>
@@ -47,11 +47,6 @@
                 <a href="{% url 'notes:courbe' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'courbe' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                     <span class="material-symbols-outlined text-xl">trending_up</span>
                     <span class="text-sm font-medium">Évolution</span>
-                </a>
-                {% elif user.profile.role == 'tuteur' and not user.is_staff %}
-                <a href="{% url 'dashboard' %}" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard' %}bg-purple-500/10 text-purple-400 active{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                    <span class="material-symbols-outlined text-xl">group</span>
-                    <span class="text-sm font-medium">Mes étudiants</span>
                 </a>
                 {% endif %}
             {% else %}
