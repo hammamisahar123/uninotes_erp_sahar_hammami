@@ -146,6 +146,15 @@ uninotes_erp_sahar_hammami/
 - Somme des poids des catégories d'un module = 100%
 - Note valide entre 0 et 20 (deux décimales max)
 
+## Année académique dynamique
+
+L'année académique est calculée automatiquement à partir de la date du jour :
+
+- **Septembre → Décembre** : `{année_courante}/{année_courante+1}` (ex: 2026/2027)
+- **Janvier → Août** : `{année_courante-1}/{année_courante}` (ex: 2025/2026)
+
+Disponible dans tous les templates via `{{ ANNEE_ACADEMIQUE }}`.
+
 ## Choix techniques
 
 - **Framework** : Django 5.2.14
