@@ -65,7 +65,7 @@ class PanierServiceTest(TestCase):
         service.inscription.save()
         success, msg = service.ajouter_module(self.module3.id)  # +10 → 70
         self.assertFalse(success)
-        self.assertIn('dépassement', msg.lower())
+        self.assertIn('dépasse', msg.lower())
 
     def test_verrouillage_auto_a_60(self):
         service = PanierService(self.user)

@@ -14,11 +14,6 @@ class NoteQuerySet(models.QuerySet):
             total=Coalesce(Sum('produit'), Value(0.0, output_field=FloatField()))
         )['total']
 
-    def moyenne_module(self, nb_categories):
-        total = self.total_pondere()
-        complet = self.count() == nb_categories and nb_categories > 0
-        return (total / 100.0) if complet else None
-
     def en_dict_par_categorie(self):
         return {n['categorie_evaluation_id']: float(n['valeur'])
                 for n in self.values('categorie_evaluation_id', 'valeur')}
