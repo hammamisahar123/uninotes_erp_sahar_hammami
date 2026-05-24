@@ -228,6 +228,7 @@
         </a>
     </div>
 
+    {% if inscription %}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20">
             <div class="flex items-center justify-between mb-4">
@@ -257,7 +258,7 @@
                 <span class="material-symbols-outlined text-purple-500">menu_book</span>
             </div>
             <div class="text-4xl font-bold text-slate-800">{{ modules_choisis|length }}</div>
-            <p class="text-xs text-slate-400 mt-3">Inscription {{ inscription.annee_academique|default:"N/A" }}</p>
+            <p class="text-xs text-slate-400 mt-3">Inscription {{ inscription.annee_academique }}</p>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
@@ -270,10 +271,16 @@
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
                 {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700{% else %}bg-emerald-50 text-emerald-700{% endif %}">
                 <span class="w-2 h-2 rounded-full {% if inscription.statut == 'ouverte' %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
-                {{ inscription.get_statut_display|default:"N/A" }}
+                {{ inscription.get_statut_display }}
             </span>
         </div>
     </div>
+    {% else %}
+    <div class="text-center py-10 text-slate-400">
+        <span class="material-symbols-outlined text-5xl mb-3 block">info</span>
+        <p class="font-medium">Cet étudiant n'a pas encore d'inscription.</p>
+    </div>
+    {% endif %}
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">

@@ -29,17 +29,21 @@ python -m venv venv
 source venv/bin/activate    # Linux/Mac
 venv\Scripts\activate       # Windows
 
-# 3. Installer les dépendances
+# 3. Installer les dépendances Python
 pip install -r requirements.txt
 
-# 4. Appliquer les migrations
+# 4. (Optionnel) Installer Node.js et générer les styles Tailwind
+npm install
+npm run build:css
+
+# 5. Appliquer les migrations
 python manage.py migrate
 
-# 5. (Optionnel) Charger les données de test
+# 6. (Optionnel) Charger les données de test
 python manage.py seed_data
 #   Ré-exécuter avec --force pour remplacer les données existantes
 
-# 6. Lancer le serveur
+# 7. Lancer le serveur
 python manage.py runserver
 ```
 
@@ -131,8 +135,8 @@ uninotes_erp_sahar_hammami/
 - **Base de données** : SQLite (db.sqlite3)
 - **Authentification** : système natif Django (django.contrib.auth)
 - **Graphiques** : Chart.js (CDN)
-- **Front-end** : Templates Django + CSS natif + Tailwind CSS
-- **Calculs** : ORM Django (annotate, aggregate, F, Sum) pour les moyennes pondérées
+- **Front-end** : Templates Django + CSS natif + Tailwind CSS (généré via Node.js, `npm run build:css`)
+- **Calculs** : ORM Django (annotate, aggregate, F, Sum, Case) pour les moyennes pondérées
 
 ## Comptes de test
 
