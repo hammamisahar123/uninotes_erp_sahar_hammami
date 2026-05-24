@@ -192,6 +192,7 @@ URL : http://127.0.0.1:8000/admin/
 | sarah.trabelsi | etudiant123 | sami.sifi |
 | mehdi.khalil | etudiant123 | sami.sifi |
 | takwa_loueti | etudiant123 | Karim Mansour |
+| sahar.hammami | etudiant123 | Karim Mansour |
 
 ## Modules du catalogue (18 modules, max 60 points par étudiant)
 
