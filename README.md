@@ -10,10 +10,10 @@ Application web de suivi académique permettant à un étudiant de composer libr
 - Inscription et authentification avec choix du rôle (étudiant / tuteur)
 - Catalogue de modules consultable avec catégories d'évaluation
 - Panier d'inscription avec compteur temps réel et verrouillage automatique à 60 points
-- Moteur de recommandation de modules selon les points restants
+- Moteur de suggestion automatique de modules (exacts puis possibles) selon les points restants
 - Dashboard de suivi avec saisie des notes par catégorie d'évaluation
-- Calcul des moyennes pondérées via ORM Django (annotate, aggregate)
-- Courbe d'évolution de la moyenne générale (Chart.js)
+- Calcul des moyennes pondérées via ORM Django (annotate, aggregate, Sum, Case)
+- Courbe d'évolution de la moyenne générale avec Chart.js (reconstitution historique)
 - Accès tuteur en lecture seule aux données des étudiants parrainés
 - Isolation des données par utilisateur
 
@@ -37,6 +37,7 @@ python manage.py migrate
 
 # 5. (Optionnel) Charger les données de test
 python manage.py seed_data
+#   Ré-exécuter avec --force pour remplacer les données existantes
 
 # 6. Lancer le serveur
 python manage.py runserver
@@ -50,22 +51,55 @@ Puis ouvrir http://127.0.0.1:8000/
 uninotes_erp_sahar_hammami/
 ├── accounts/              # Gestion des profils utilisateurs (rôles, parrainage)
 │   ├── models.py          # Profile (1-1 User, self-FK tuteur)
-│   └── admin.py
+│   ├── services.py        # DashboardService (modules, notes par catégorie)
+│   ├── decorators.py      # Decorateur @role_required
+│   ├── forms.py           # SignupForm, LoginForm
+│   ├── signals.py         # Création auto du Profile à l'inscription
+│   ├── templatetags/      # Filtres personnalisés (dict_key)
+│   ├── admin.py
+│   ├── tests.py
+│   └── views.py
 ├── catalogue/             # Référentiel (données de l'établissement)
 │   ├── models.py          # CatalogueModule, CategorieEvaluation
-│   └── admin.py
+│   ├── urls.py
+│   ├── admin.py
+│   ├── tests.py
+│   └── views.py
 ├── inscription/           # Inscriptions et choix de modules
 │   ├── models.py          # Inscription, ModuleChoisi
-│   └── admin.py
+│   ├── managers.py        # ModuleChoisiQuerySet (with_moyenne, moyenne_générale)
+│   ├── services.py        # PanierService (ajout/retrait/suggestions)
+│   ├── urls.py
+│   ├── admin.py
+│   ├── tests.py
+│   └── views.py
 ├── notes/                 # Saisie des notes
 │   ├── models.py          # Note
+│   ├── managers.py        # NoteQuerySet (total_pondere)
+│   ├── services.py        # NoteService, CourbeService
+│   ├── urls.py
 │   ├── admin.py
+│   ├── tests.py
+│   ├── views.py
 │   └── management/commands/seed_data.py
 ├── uninotes_erp/          # Configuration Django
 │   ├── settings.py
 │   └── urls.py
 ├── templates/             # Templates HTML
+│   ├── base.html
+│   ├── accounts/
+│   │   └── home.html, dashboard.html
+│   ├── catalogue/
+│   │   └── liste.html
+│   ├── inscription/
+│   │   └── panier.html
+│   ├── notes/
+│   │   └── saisie_notes.html, courbe.html
+│   └── registration/
+│       └── login.html, signup.html
 ├── static/                # Fichiers statiques (CSS, JS)
+│   ├── css/style.css
+│   └── js/main.js
 ├── manage.py
 ├── requirements.txt
 ├── uninotes_erp_export.sql
@@ -97,7 +131,7 @@ uninotes_erp_sahar_hammami/
 - **Base de données** : SQLite (db.sqlite3)
 - **Authentification** : système natif Django (django.contrib.auth)
 - **Graphiques** : Chart.js (CDN)
-- **Front-end** : Templates Django + CSS natif
+- **Front-end** : Templates Django + CSS natif + Tailwind CSS
 - **Calculs** : ORM Django (annotate, aggregate, F, Sum) pour les moyennes pondérées
 
 ## Comptes de test
@@ -158,7 +192,7 @@ Le champ booléen `est_actif` (défaut : `True`) sur `CatalogueModule` permet de
 
 ## Limites et améliorations possibles
 
-- Interface utilisateur basique (CSS minimal) — amélioration possible avec Bootstrap/Tailwind
+- Interface utilisateur basique (CSS natif + Tailwind) — amélioration possible avec Bootstrap
 - Pas d'API REST — limitation volontaire (hors périmètre)
-- Pas de tests automatisés — à ajouter pour la logique métier
+- Couverture de tests partielle — à étendre pour la logique métier avancée
 - Pas de déploiement — projet local uniquement
