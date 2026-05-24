@@ -240,6 +240,17 @@ Le champ booléen `est_actif` (défaut : `True`) sur `CatalogueModule` permet de
 - Les étudiants ayant déjà sélectionné le module conservent leur choix et leurs notes. 
 - Le module reste accessible en requêtage direct via l'ORM si nécessaire (ex. re-calcul de moyennes historiques).
 
+## Note sur l'interface d'administration
+
+L'interface d'administration (`/admin/`) utilise le module natif `django.contrib.admin`, intégré à Django. Elle n'était pas explicitement demandée dans le cahier des charges, mais a été conservée car :
+
+- Elle permet de **gérer le catalogue** (ajouter des modules, des catégories d'évaluation)
+- Elle permet de **visualiser les inscriptions et les notes** sans interface utilisateur
+- Elle est générée **automatiquement** à partir des modèles Django — pas de code supplémentaire
+- Elle sert d'outil de vérification pour le prof (données de test, relations, intégrité)
+
+Aucune fonctionnalité n'a été ajoutée via l'admin — c'est uniquement un outil de gestion.
+
 ## Limites et améliorations possibles
 
 - Interface utilisateur basique (CSS natif + Tailwind) — amélioration possible avec Bootstrap
