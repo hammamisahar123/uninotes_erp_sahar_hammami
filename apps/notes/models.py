@@ -1,6 +1,6 @@
 from django.db import models
-from inscription.models import ModuleChoisi
-from catalogue.models import CategorieEvaluation
+from apps.inscription.models import ModuleChoisi
+from apps.catalogue.models import CategorieEvaluation
 from .managers import NoteQuerySet
 
 

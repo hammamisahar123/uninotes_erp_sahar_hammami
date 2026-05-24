@@ -8,7 +8,7 @@ from django.db.models.functions import Coalesce, Cast
 
 class ModuleChoisiQuerySet(models.QuerySet):
     def _nb_categories_subq(self):
-        from catalogue.models import CategorieEvaluation
+        from apps.catalogue.models import CategorieEvaluation
         return Coalesce(Subquery(
             CategorieEvaluation.objects.filter(module=OuterRef('module_catalogue'))
             .values('module').annotate(cnt=Count('id')).values('cnt')[:1],
@@ -16,7 +16,7 @@ class ModuleChoisiQuerySet(models.QuerySet):
         ), Value(0, output_field=IntegerField()))
 
     def _nb_notes_subq(self, note_ids=None):
-        from notes.models import Note
+        from apps.notes.models import Note
         qs = Note.objects.filter(module_choisi=OuterRef('id'))
         if note_ids is not None:
             qs = qs.filter(id__in=note_ids)
@@ -26,7 +26,7 @@ class ModuleChoisiQuerySet(models.QuerySet):
         ), Value(0, output_field=IntegerField()))
 
     def _total_pondere_subq(self, note_ids=None):
-        from notes.models import Note
+        from apps.notes.models import Note
         qs = Note.objects.filter(module_choisi=OuterRef('id'))
         if note_ids is not None:
             qs = qs.filter(id__in=note_ids)

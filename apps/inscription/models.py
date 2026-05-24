@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from catalogue.models import CatalogueModule
+from apps.catalogue.models import CatalogueModule
 from .managers import ModuleChoisiQuerySet
 
 

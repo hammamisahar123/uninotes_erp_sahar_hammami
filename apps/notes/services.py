@@ -1,7 +1,7 @@
 import json
-from notes.models import Note
-from catalogue.models import CategorieEvaluation
-from inscription.models import ModuleChoisi
+from apps.notes.models import Note
+from apps.catalogue.models import CategorieEvaluation
+from apps.inscription.models import ModuleChoisi
 
 
 class NoteService:

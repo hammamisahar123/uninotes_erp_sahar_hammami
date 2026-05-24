@@ -1,6 +1,6 @@
 from django.db.models import Prefetch
-from inscription.models import Inscription, ModuleChoisi
-from notes.models import Note
+from apps.inscription.models import Inscription, ModuleChoisi
+from apps.notes.models import Note
 
 
 class DashboardService:

@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'catalogue',
-    'inscription',
-    'notes',
+    'apps.accounts',
+    'apps.catalogue',
+    'apps.inscription',
+    'apps.notes',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'accounts.context_processors.academic_year',
+                'apps.accounts.context_processors.academic_year',
             ],
         },
     },

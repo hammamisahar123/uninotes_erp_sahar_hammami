@@ -2,10 +2,10 @@ from django.test import TestCase
 from django.db import IntegrityError
 from decimal import Decimal
 from django.contrib.auth.models import User
-from catalogue.models import CatalogueModule, CategorieEvaluation
-from inscription.models import Inscription, ModuleChoisi
-from notes.models import Note
-from notes.services import NoteService
+from apps.catalogue.models import CatalogueModule, CategorieEvaluation
+from apps.inscription.models import Inscription, ModuleChoisi
+from apps.notes.models import Note
+from apps.notes.services import NoteService
 
 
 def _make_etudiant(username='etu', password='testpass123'):

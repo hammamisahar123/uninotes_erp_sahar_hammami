@@ -1,7 +1,7 @@
 import math
 from datetime import date
-from inscription.models import Inscription, ModuleChoisi
-from catalogue.models import CatalogueModule
+from apps.inscription.models import Inscription, ModuleChoisi
+from apps.catalogue.models import CatalogueModule
 
 
 def _annee_courante():

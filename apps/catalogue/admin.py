@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import ProtectedError
 from django.utils.html import format_html
 from .models import CatalogueModule, CategorieEvaluation

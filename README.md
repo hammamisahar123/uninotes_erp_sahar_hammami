@@ -16,6 +16,8 @@ Application web de suivi académique permettant à un étudiant de composer libr
 - Courbe d'évolution de la moyenne générale avec Chart.js (reconstitution historique)
 - Accès tuteur en lecture seule aux données des étudiants parrainés
 - Isolation des données par utilisateur
+- Interface d'administration personnalisée (gestion des utilisateurs, modules, inscriptions, notes)
+- Architecture structurée avec les apps Django dans un dossier `apps/`
 
 ## Installation
 
@@ -39,56 +41,68 @@ npm run build:css
 # 5. Appliquer les migrations
 python manage.py migrate
 
-# 6. (Optionnel) Charger les données de test
+# 6. Charger les données de test
 python manage.py seed_data
 #   Ré-exécuter avec --force pour remplacer les données existantes
 
-# 7. Lancer le serveur
+# 7. (Optionnel) Créer un super-utilisateur pour l'admin
+python manage.py createsuperuser
+
+# 8. Lancer le serveur
 python manage.py runserver
 ```
 
 Puis ouvrir http://127.0.0.1:8000/
 
+## Tests
+
+```bash
+python manage.py test
+# 33 tests — modèles, services et gestionnaires
+```
+
 ## Structure du projet
 
 ```
 uninotes_erp_sahar_hammami/
-├── accounts/              # Gestion des profils utilisateurs (rôles, parrainage)
-│   ├── models.py          # Profile (1-1 User, self-FK tuteur)
-│   ├── services.py        # DashboardService (modules, notes par catégorie)
-│   ├── decorators.py      # Decorateur @role_required
-│   ├── forms.py           # SignupForm, LoginForm
-│   ├── signals.py         # Création auto du Profile à l'inscription
-│   ├── templatetags/      # Filtres personnalisés (dict_key)
-│   ├── admin.py
-│   ├── tests.py
-│   └── views.py
-├── catalogue/             # Référentiel (données de l'établissement)
-│   ├── models.py          # CatalogueModule, CategorieEvaluation
-│   ├── urls.py
-│   ├── admin.py
-│   ├── tests.py
-│   └── views.py
-├── inscription/           # Inscriptions et choix de modules
-│   ├── models.py          # Inscription, ModuleChoisi
-│   ├── managers.py        # ModuleChoisiQuerySet (with_moyenne, moyenne_générale)
-│   ├── services.py        # PanierService (ajout/retrait/suggestions)
-│   ├── urls.py
-│   ├── admin.py
-│   ├── tests.py
-│   └── views.py
-├── notes/                 # Saisie des notes
-│   ├── models.py          # Note
-│   ├── managers.py        # NoteQuerySet (total_pondere)
-│   ├── services.py        # NoteService, CourbeService
-│   ├── urls.py
-│   ├── admin.py
-│   ├── tests.py
-│   ├── views.py
-│   └── management/commands/seed_data.py
+├── apps/                  # Applications Django
+│   ├── accounts/          # Gestion des profils utilisateurs (rôles, parrainage)
+│   │   ├── models.py      # Profile (1-1 User, self-FK tuteur)
+│   │   ├── services.py    # DashboardService (modules, notes par catégorie)
+│   │   ├── decorators.py  # Decorateur @role_required
+│   │   ├── forms.py       # SignupForm, LoginForm
+│   │   ├── signals.py     # Création auto du Profile à l'inscription
+│   │   ├── templatetags/  # Filtres personnalisés (dict_key, split)
+│   │   ├── admin.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── catalogue/         # Référentiel (données de l'établissement)
+│   │   ├── models.py      # CatalogueModule, CategorieEvaluation
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── inscription/       # Inscriptions et choix de modules
+│   │   ├── models.py      # Inscription, ModuleChoisi
+│   │   ├── managers.py    # ModuleChoisiQuerySet (with_moyenne, moyenne_générale)
+│   │   ├── services.py    # PanierService (ajout/retrait/suggestions)
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   └── notes/             # Saisie des notes
+│       ├── models.py      # Note
+│       ├── managers.py    # NoteQuerySet (total_pondere)
+│       ├── services.py    # NoteService, CourbeService
+│       ├── urls.py
+│       ├── admin.py
+│       ├── tests.py
+│       ├── views.py
+│       └── management/commands/seed_data.py
 ├── uninotes_erp/          # Configuration Django
 │   ├── settings.py
-│   └── urls.py
+│   ├── urls.py
+│   └── admin_site.py      # AdminSite personnalisé
 ├── templates/             # Templates HTML
 │   ├── base.html
 │   ├── accounts/
@@ -103,7 +117,10 @@ uninotes_erp_sahar_hammami/
 │       └── login.html, signup.html
 ├── static/                # Fichiers statiques (CSS, JS)
 │   ├── css/style.css
-│   └── js/main.js
+│   ├── js/main.js
+│   └── admin/js/
+│       ├── profile_role.js
+│       └── poids_validation.js
 ├── manage.py
 ├── requirements.txt
 ├── uninotes_erp_export.sql
@@ -137,15 +154,35 @@ uninotes_erp_sahar_hammami/
 - **Graphiques** : Chart.js (CDN)
 - **Front-end** : Templates Django + CSS natif + Tailwind CSS (généré via Node.js, `npm run build:css`)
 - **Calculs** : ORM Django (annotate, aggregate, F, Sum, Case) pour les moyennes pondérées
+- **Administration** : `AdminSite` personnalisé (`uninotes_erp/admin_site.py`) — conservé pour personnaliser l'en-tête et le titre, sans session séparée. L'admin et le site public partagent la même authentification (comportement Django par défaut), permettant aux super-utilisateurs (`sami.sifi`, `admin`) d'accéder aux deux interfaces avec une seule connexion.
 
 ## Comptes de test
 
+### Administration
+
 | Utilisateur | Rôle | Mot de passe |
 |---|---|---|
-| sami.sifi | Tuteur | password123 |
-| ahmed.benali | Étudiant | password123 |
-| sarah.trabelsi | Étudiant | password123 |
-| mehdi.khalil | Étudiant | password123 |
+| admin | Super-admin / Tuteur | admin123 |
+| sami.sifi | Super-admin / Tuteur | sami123 |
+
+URL : http://127.0.0.1:8000/admin/
+
+### Tuteurs
+
+| Utilisateur | Nom | Mot de passe |
+|---|---|---|
+| karim.mansour | Karim Mansour | tuteur123 |
+| nadia.belhaj | Nadia Belhaj | tuteur123 |
+| lotfi.gueddiche | Lotfi Gueddiche | tuteur123 |
+
+### Étudiants
+
+| Utilisateur | Mot de passe | Tuteur |
+|---|---|---|
+| ahmed.benali | etudiant123 | sami.sifi |
+| sarah.trabelsi | etudiant123 | sami.sifi |
+| mehdi.khalil | etudiant123 | sami.sifi |
+| takwa_loueti | etudiant123 | Karim Mansour |
 
 ## Modules du catalogue (18 modules, max 60 points par étudiant)
 

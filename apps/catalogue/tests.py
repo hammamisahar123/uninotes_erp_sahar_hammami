@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-from catalogue.models import CatalogueModule, CategorieEvaluation
+from apps.catalogue.models import CatalogueModule, CategorieEvaluation
 
 
 def _make_module(**kwargs):

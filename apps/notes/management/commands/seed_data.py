@@ -1,7 +1,7 @@
 from datetime import date
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from catalogue.models import CatalogueModule, CategorieEvaluation
+from apps.catalogue.models import CatalogueModule, CategorieEvaluation
 
 
 def _annee_courante():
@@ -9,8 +9,8 @@ def _annee_courante():
     if today.month >= 9:
         return f"{today.year}/{today.year + 1}"
     return f"{today.year - 1}/{today.year}"
-from inscription.models import Inscription, ModuleChoisi
-from notes.models import Note
+from apps.inscription.models import Inscription, ModuleChoisi
+from apps.notes.models import Note
 
 
 class Command(BaseCommand):

@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 
-from catalogue.models import CatalogueModule, CategorieEvaluation
-from inscription.models import Inscription, ModuleChoisi
-from inscription.services import PanierService
+from apps.catalogue.models import CatalogueModule, CategorieEvaluation
+from apps.inscription.models import Inscription, ModuleChoisi
+from apps.inscription.services import PanierService
 
 
 def _make_etudiant(username='etu', password='testpass123'):

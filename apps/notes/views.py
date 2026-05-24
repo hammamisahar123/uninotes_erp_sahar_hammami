@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from accounts.decorators import role_required
-from inscription.models import ModuleChoisi
+from apps.accounts.decorators import role_required
+from apps.inscription.models import ModuleChoisi
 from .services import NoteService, CourbeService
 
 
