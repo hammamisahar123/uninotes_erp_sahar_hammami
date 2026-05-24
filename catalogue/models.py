@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.db.models import Sum
 
 
 class CatalogueModule(models.Model):
@@ -29,7 +31,6 @@ class CategorieEvaluation(models.Model):
     """
     nom = models.CharField(max_length=100, verbose_name="Nom")
     poids = models.PositiveIntegerField(verbose_name="Poids (%)")
-    # Un module peut avoir plusieurs catégories d'évaluation
     module = models.ForeignKey(
         CatalogueModule, on_delete=models.CASCADE,
         related_name='categories_evaluation', verbose_name="Module"
@@ -40,6 +41,25 @@ class CategorieEvaluation(models.Model):
         verbose_name_plural = "Catégories d'évaluation"
         unique_together = ['nom', 'module']
         ordering = ['module', 'nom']
+
+    def clean(self):
+        if self.poids <= 0:
+            raise ValidationError({'poids': "Le poids doit être supérieur à 0."})
+        if self.poids > 100:
+            raise ValidationError({'poids': "Le poids ne peut pas dépasser 100%."})
+        autres = CategorieEvaluation.objects.filter(module=self.module)
+        if self.pk:
+            autres = autres.exclude(pk=self.pk)
+        total_autres = autres.aggregate(s=Sum('poids'))['s'] or 0
+        if total_autres + self.poids > 100:
+            raise ValidationError(
+                f"La somme des poids du module « {self.module.intitule} » "
+                f"dépasserait 100% (actuel : {total_autres}% + {self.poids}% = {total_autres + self.poids}%)."
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.nom} ({self.poids}%) - {self.module.intitule}"
