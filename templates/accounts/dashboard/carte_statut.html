@@ -1,0 +1,19 @@
+<div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+    <div class="flex items-center justify-between mb-4">
+        <span class="text-slate-500 text-sm font-medium">{{ titre }}</span>
+        <span class="material-symbols-outlined {% if inscription.statut == 'ouverte' %}text-amber-500{% else %}text-emerald-500{% endif %}">
+            {% if inscription.statut == 'ouverte' %}lock_open{% else %}verified{% endif %}
+        </span>
+    </div>
+    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
+        {% if inscription.statut == 'ouverte' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+        <span class="w-2 h-2 rounded-full {% if inscription.statut == 'ouverte' %}bg-amber-500{% else %}bg-emerald-500{% endif %}"></span>
+        {{ inscription.get_statut_display }}
+    </span>
+    {% if show_panier_link and inscription.statut == 'ouverte' %}
+    <a href="{% url 'inscription:panier' %}" class="mt-4 inline-flex items-center gap-1.5 text-sm text-purple-600 font-medium hover:text-purple-700 transition-colors">
+        <span class="material-symbols-outlined text-lg">shopping_cart</span>
+        Composer mon panier
+    </a>
+    {% endif %}
+</div>

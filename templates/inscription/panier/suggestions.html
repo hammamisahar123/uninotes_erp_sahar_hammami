@@ -1,0 +1,27 @@
+<div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 fade-in">
+    <div class="flex items-center gap-2 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+            <span class="material-symbols-outlined text-amber-600">lightbulb</span>
+        </div>
+        <div>
+            <h3 class="font-semibold text-amber-800">Suggestions pour vos {{ points_restants }} points restants</h3>
+            <p class="text-xs text-amber-600">Modules recommandés selon vos points disponibles</p>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        {% for mod in suggestions %}
+        <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100 hover:border-amber-300 hover:shadow-sm transition-all">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-amber-600 text-lg">lightbulb</span>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-slate-800">{{ mod.intitule }}</p>
+                    <span class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">{{ mod.coefficient }} pts</span>
+                </div>
+            </div>
+            <a href="{% url 'inscription:ajouter_module' mod.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded-lg hover:bg-amber-700 transition-all shadow-sm">Ajouter</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>

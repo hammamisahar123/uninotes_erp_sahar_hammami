@@ -1,0 +1,70 @@
+{% load uninotes_extras %}
+<tr class="hover:bg-slate-50 transition-colors">
+    <td class="px-6 py-4">
+        <details class="group">
+            <summary class="cursor-pointer list-none flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-white text-base">menu_book</span>
+                </div>
+                <span class="font-medium text-slate-800">{{ mc.module_catalogue.intitule }}</span>
+                <span class="material-symbols-outlined text-slate-300 text-sm group-open:hidden">expand_more</span>
+                <span class="material-symbols-outlined text-slate-300 text-sm hidden group-open:inline">expand_less</span>
+            </summary>
+            <div class="mt-2 ml-11 space-y-1.5">
+                {% for cat in mc.module_catalogue.categories_evaluation.all %}
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="text-slate-500 w-24">{{ cat.nom }}</span>
+                    {% if show_cat_progress %}
+                    <div class="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-purple-400 rounded-full" style="width:{{ cat.poids }}%"></div>
+                    </div>
+                    <span class="font-medium text-purple-600 w-8">{{ cat.poids }}%</span>
+                    {% else %}
+                    <span class="font-medium text-purple-600 w-12">{{ cat.poids }}%</span>
+                    {% endif %}
+                    {% if nnotes and cat.id in nnotes %}
+                    <span class="font-semibold {% if nnotes|dict_key:cat.id >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ nnotes|dict_key:cat.id }}</span>
+                    <span class="text-slate-400">/ 20</span>
+                    {% else %}
+                    <span class="text-slate-300">—</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </details>
+    </td>
+    <td class="px-6 py-4">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            {% if mc.module_catalogue.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+            {% elif mc.module_catalogue.coefficient <= 8 %}bg-amber-50 text-amber-700
+            {% else %}bg-rose-50 text-rose-700{% endif %}">
+            {{ mc.module_catalogue.coefficient }} pts
+        </span>
+    </td>
+    <td class="px-6 py-4">
+        {% if mc.moyenne is not None %}
+        <div class="flex items-center gap-2">
+            <span class="font-semibold {% if mc.moyenne >= 10 %}text-emerald-600{% else %}text-red-500{% endif %}">{{ mc.moyenne|floatformat:2 }}</span>
+            <span class="text-slate-400">/ 20</span>
+            {% if show_moyenne_icon %}
+            <span class="material-symbols-outlined text-sm {% if mc.moyenne >= 10 %}text-emerald-400{% else %}text-red-300{% endif %}">
+                {% if mc.moyenne >= 10 %}check_circle{% else %}error{% endif %}
+            </span>
+            {% endif %}
+        </div>
+        {% else %}
+        <span class="text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">hourglass_empty</span>
+            En attente
+        </span>
+        {% endif %}
+    </td>
+    {% if show_action %}
+    <td class="px-6 py-4 text-right">
+        <a href="{% url 'notes:saisie_notes' mc.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 hover:shadow-sm transition-all">
+            <span class="material-symbols-outlined text-sm">edit</span>
+            Saisir
+        </a>
+    </td>
+    {% endif %}
+</tr>

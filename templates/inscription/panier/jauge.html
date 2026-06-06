@@ -1,0 +1,27 @@
+<div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+    <div class="flex flex-col items-center">
+        <svg viewBox="0 0 120 120" class="w-32 h-32">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#8b5cf6" stroke-width="10"
+                stroke-dasharray="339.292" stroke-dashoffset="{{ gauge_offset }}"
+                stroke-linecap="round" transform="rotate(-90 60 60)" class="gauge-circle"/>
+            <text x="60" y="55" text-anchor="middle" fill="#0f172a" font-size="22" font-weight="700">{{ total_coeff }}</text>
+            <text x="60" y="75" text-anchor="middle" fill="#94a3b8" font-size="9">/ 60 points</text>
+        </svg>
+        <div class="mt-4 w-full">
+            <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full rounded-full progress-animated {% if total_coeff == 60 %}bg-emerald-500{% elif total_coeff >= 50 %}bg-amber-500{% else %}bg-purple-500{% endif %}" style="width:{% widthratio total_coeff 60 100 %}%"></div>
+            </div>
+            <p class="text-center text-sm text-slate-500 mt-3 font-medium">
+                {% if points_restants > 0 %}
+                    <span class="text-amber-600"><strong>{{ points_restants }}</strong> points restants</span>
+                {% else %}
+                    <span class="text-emerald-600 flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-lg">celebration</span>
+                        Objectif atteint !
+                    </span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>

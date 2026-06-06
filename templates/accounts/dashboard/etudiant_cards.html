@@ -1,0 +1,20 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
+    {% include "accounts/dashboard/carte_moyenne.html" with titre="Moyenne générale" icone="star" %}
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+        <div class="flex items-center justify-between mb-4">
+            <span class="text-slate-500 text-sm font-medium">Crédits</span>
+            <span class="material-symbols-outlined text-purple-500">token</span>
+        </div>
+        <div class="flex items-end gap-2">
+            <span class="text-4xl font-bold text-slate-800">{{ total_coeff }}</span>
+            <span class="text-slate-400 text-sm mb-1">/ 60 pts</span>
+        </div>
+        <div class="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full progress-animated {% if total_coeff == 60 %}bg-emerald-500{% elif total_coeff >= 50 %}bg-amber-500{% else %}bg-purple-500{% endif %}" style="width:{% widthratio total_coeff 60 100 %}%"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Inscription {{ inscription.annee_academique }}</p>
+    </div>
+
+    {% include "accounts/dashboard/carte_statut.html" with titre="Statut" show_panier_link=True %}
+</div>

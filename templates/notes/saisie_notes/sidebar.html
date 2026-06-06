@@ -1,0 +1,71 @@
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">menu_book</span>
+        </div>
+        <div>
+            <p class="text-xs text-slate-400">Module</p>
+            <p class="font-medium text-slate-800 text-sm">{{ module_choisi.module_catalogue.intitule }}</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-amber-600">data_table</span>
+        </div>
+        <div>
+            <p class="text-xs text-slate-400">Coefficient</p>
+            <p class="font-medium text-slate-800 text-sm">{{ module_choisi.module_catalogue.coefficient }} points</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-emerald-600">fact_check</span>
+        </div>
+        <div>
+            <p class="text-xs text-slate-400">Catégories</p>
+            <p class="font-medium text-slate-800 text-sm">{{ categories|length }} évaluations</p>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/20">
+    <div class="flex items-center justify-between mb-3">
+        <span class="text-emerald-100 text-sm font-medium">Moyenne du module</span>
+        <span class="material-symbols-outlined text-emerald-100">score</span>
+    </div>
+    <div class="flex items-end gap-2">
+        {% if moyenne_module is not None %}
+        <span class="text-4xl font-bold">{{ moyenne_module|floatformat:2 }}</span>
+        <span class="text-emerald-200 text-sm mb-1">/ 20</span>
+        {% else %}
+        <span class="text-2xl font-medium text-emerald-100">En attente</span>
+        {% endif %}
+    </div>
+    {% if moyenne_module is not None %}
+    <div class="mt-4 h-1.5 bg-emerald-400/50 rounded-full overflow-hidden">
+        <div class="h-full bg-white rounded-full transition-all" style="width:{% widthratio moyenne_module 20 100 %}%"></div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+    <h4 class="font-medium text-slate-800 text-sm mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-slate-400 text-lg">history</span>
+        Dernières saisies
+    </h4>
+    <div class="space-y-3">
+        {% for cat in categories %}
+        <div class="flex items-center justify-between text-sm">
+            <span class="text-slate-600">{{ cat.nom }}</span>
+            <span class="font-medium {% if notes_existantes|dict_key:cat.id %}text-slate-800{% else %}text-slate-300{% endif %}">
+                {% if notes_existantes|dict_key:cat.id %}
+                    {{ notes_existantes|dict_key:cat.id }}/20
+                {% else %}
+                    —
+                {% endif %}
+            </span>
+        </div>
+        {% if not forloop.last %}<div class="border-t border-slate-50"></div>{% endif %}
+        {% endfor %}
+    </div>
+</div>

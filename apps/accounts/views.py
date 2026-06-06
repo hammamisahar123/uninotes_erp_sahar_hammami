@@ -31,17 +31,35 @@ def home(request):
 @login_required
 def dashboard(request):
     user = request.user
+
+    # Redirection admin
     if user.is_staff:
         return redirect('admin:index')
-    if user.profile.role == 'etudiant':
+
+    # Vérification que le profil existe
+    try:
+        profile = user.profile
+    except Exception:
+        messages.error(request, "Profil introuvable. Contactez un administrateur.")
+        return redirect('home')
+
+    # Routage explicite par rôle
+    role = profile.role
+
+    if role == 'etudiant':
         service = DashboardService(user)
         return render(request, 'accounts/dashboard.html', service.get_context())
 
-    etudiants = User.objects.filter(
-        profile__tuteur=user.profile, profile__role='etudiant'
-    )
-    return render(request, 'accounts/dashboard.html', {'etudiants': etudiants})
+    if role == 'tuteur':
+        etudiants = User.objects.filter(
+            profile__tuteur=profile,
+            profile__role='etudiant'
+        )
+        return render(request, 'accounts/dashboard.html', {'etudiants': etudiants})
 
+    # Rôle inconnu — au lieu de tomber silencieusement dans une branche
+    messages.warning(request, f"Rôle '{role}' non reconnu.")
+    return redirect('home')
 
 @login_required
 @role_required('tuteur')

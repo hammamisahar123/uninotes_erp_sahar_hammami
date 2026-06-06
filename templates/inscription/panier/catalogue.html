@@ -1,0 +1,67 @@
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden fade-in">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-500">catalogue</span>
+            Catalogue des modules
+        </h3>
+        <span class="text-xs text-slate-400">{{ modules_disponibles|length }} disponible(s)</span>
+    </div>
+    <div class="p-6">
+        {% if modules_disponibles %}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {% for mod in modules_disponibles %}
+            <div class="border border-slate-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-md transition-all group {% if mod.coefficient <= points_restants %}hover:bg-purple-50/30{% else %}opacity-60{% endif %}">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
+                            <span class="material-symbols-outlined text-white text-lg">menu_book</span>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-semibold text-slate-800 text-sm truncate">{{ mod.intitule }}</h4>
+                            <span class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full
+                                {% if mod.coefficient <= 5 %}bg-emerald-50 text-emerald-700
+                                {% elif mod.coefficient <= 8 %}bg-amber-50 text-amber-700
+                                {% else %}bg-rose-50 text-rose-700{% endif %}">
+                                <span class="w-1.5 h-1.5 rounded-full
+                                    {% if mod.coefficient <= 5 %}bg-emerald-500
+                                    {% elif mod.coefficient <= 8 %}bg-amber-500
+                                    {% else %}bg-rose-500{% endif %}"></span>
+                                {{ mod.coefficient }} pts
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mb-3 line-clamp-2">{{ mod.description|default:"Aucune description" }}</p>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    {% for cat in mod.categories_evaluation.all %}
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded-full
+                        {% cycle 'bg-blue-50 text-blue-700' 'bg-emerald-50 text-emerald-700' 'bg-amber-50 text-amber-700' 'bg-rose-50 text-rose-700' 'bg-violet-50 text-violet-700' %}">
+                        {{ cat.nom }} {{ cat.poids }}%
+                    </span>
+                    {% endfor %}
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                    <span class="text-xs text-slate-400">Coeff. {{ mod.coefficient }}</span>
+                    {% if mod.coefficient <= points_restants %}
+                    <a href="{% url 'inscription:ajouter_module' mod.id %}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-all shadow-sm hover:shadow-md">
+                        <span class="material-symbols-outlined text-sm">add</span>
+                        Ajouter
+                    </a>
+                    {% else %}
+                    <span class="text-xs text-slate-400 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">block</span>
+                        Trop élevé
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10 text-slate-400">
+            <span class="material-symbols-outlined text-6xl mb-3 block text-slate-300">check_circle</span>
+            <p class="font-medium text-slate-500">Tous les modules disponibles sont dans votre panier.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>

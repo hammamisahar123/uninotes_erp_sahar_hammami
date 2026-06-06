@@ -106,15 +106,46 @@ uninotes_erp_sahar_hammami/
 ├── templates/             # Templates HTML
 │   ├── base.html
 │   ├── accounts/
-│   │   └── home.html, dashboard.html
+│   │   ├── home.html
+│   │   ├── dashboard.html           # Orchestrateur (47 lignes)
+│   │   └── dashboard/               # Partiels du dashboard
+│   │       ├── carte_moyenne.html
+│   │       ├── carte_statut.html
+│   │       ├── module_tr.html
+│   │       ├── etudiant_cards.html
+│   │       ├── etudiant_modules.html
+│   │       ├── etudiant_empty.html
+│   │       ├── tuteur_list.html
+│   │       ├── tuteur_detail_cards.html
+│   │       ├── tuteur_detail_modules.html
+│   │       └── tuteur_detail_empty.html
 │   ├── catalogue/
 │   │   └── liste.html
 │   ├── inscription/
-│   │   └── panier.html
+│   │   ├── panier.html              # Orchestrateur (25 lignes)
+│   │   └── panier/                  # Partiels du panier
+│   │       ├── acces_refuse.html
+│   │       ├── jauge.html
+│   │       ├── panier_modules.html
+│   │       ├── catalogue.html
+│   │       ├── suggestions.html
+│   │       ├── pas_de_suggestions.html
+│   │       └── verrouillee.html
 │   ├── notes/
-│   │   └── saisie_notes.html, courbe.html
+│   │   ├── saisie_notes.html        # Orchestrateur (15 lignes)
+│   │   ├── courbe.html              # Orchestrateur (20 lignes)
+│   │   ├── saisie_notes/
+│   │   │   ├── acces_refuse.html
+│   │   │   ├── formulaire.html
+│   │   │   └── sidebar.html
+│   │   └── courbe/
+│   │       ├── graphique.html
+│   │       ├── stats.html
+│   │       └── navigation.html
 │   └── registration/
-│       └── login.html, signup.html
+│       ├── auth_base.html           # Layout partagé login/signup
+│       ├── login.html               # 16 lignes (était 88)
+│       └── signup.html              # 28 lignes (était 112)
 ├── static/                # Fichiers statiques (CSS, JS)
 │   ├── css/style.css
 │   ├── js/main.js
@@ -251,6 +282,18 @@ L'interface d'administration (`/admin/`) utilise le module natif `django.contrib
 - Elle sert d'outil de vérification pour le prof (données de test, relations, intégrité)
 
 Aucune fonctionnalité n'a été ajoutée via l'admin — c'est uniquement un outil de gestion.
+
+## Organisation des templates
+
+Les templates ont été factorisés en fichiers partiels pour améliorer la maintenabilité :
+
+- **dashboard.html** (404→47 lignes) : découpé en 7 partiels dans `accounts/dashboard/`
+- **panier.html** (208→25 lignes) : découpé en 7 partiels dans `inscription/panier/`
+- **saisie_notes.html** (146→15 lignes) : découpé en 3 partiels dans `notes/saisie_notes/`
+- **courbe.html** (147→20 lignes) : découpé en 3 partiels dans `notes/courbe/`
+- **login.html** (88→16 lignes) et **signup.html** (112→28 lignes) : factorisés via `registration/auth_base.html`
+
+Les composants partagés (`carte_moyenne.html`, `carte_statut.html`, `module_tr.html`) sont réutilisés entre les vues étudiant et tuteur grâce au paramétrage par `{% include ... with %}`.
 
 ## Limites et améliorations possibles
 

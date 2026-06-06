@@ -1,0 +1,20 @@
+{% load uninotes_extras %}
+<div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-purple-500/20">
+    <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+            <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Notes saisies</p>
+            <p class="text-2xl font-bold mt-1">{{ valeurs|length }}</p>
+        </div>
+        <div>
+            <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Dernière moyenne</p>
+            <p class="text-2xl font-bold mt-1">
+                {% with last=valeurs|last %}{{ last }}{% endwith %}
+                <span class="text-purple-200 text-sm font-normal">/20</span>
+            </p>
+        </div>
+        <div>
+            <p class="text-purple-200 text-xs uppercase tracking-wider font-medium">Max atteint</p>
+            <p class="text-2xl font-bold mt-1">{{ valeurs|cut:"["|cut:"]"|cut:" "|split:","|first|default:"—" }}</p>
+        </div>
+    </div>
+</div>
